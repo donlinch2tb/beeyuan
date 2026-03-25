@@ -1,4 +1,4 @@
-import { useI18n } from '../i18n/I18nContext';
+import { useI18n } from '../i18n/useI18n';
 import { useReveal } from '../hooks/useReveal';
 
 export default function ESGCircular() {
@@ -8,9 +8,9 @@ export default function ESGCircular() {
   const metrics = t('esg.metrics');
 
   return (
-    <section id="esg" className="py-20 lg:py-28 bg-surface-container-low" ref={ref}>
+    <section id="esg" className="py-12 lg:py-16 bg-surface-container-low" ref={ref}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="mb-16 reveal">
+        <div className="mb-10 reveal">
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface tracking-tight mb-4">
             {t('esg.sectionTitle')}
           </h2>
@@ -21,7 +21,7 @@ export default function ESGCircular() {
         </div>
 
         {/* Circular Flow */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-12">
           {/* Visual Circular Diagram */}
           <div className="reveal-left">
             <div className="relative">
@@ -41,20 +41,18 @@ export default function ESGCircular() {
                       <p className="text-xs text-on-surface-variant font-body">
                         {step.desc}
                       </p>
-                      {/* Arrow indicator */}
-                      {i < 3 && (
-                        <div className="absolute -right-3 top-1/2 transform -translate-y-1/2 text-primary/30 z-10 hidden lg:block">
-                          <span className="material-symbols-outlined text-xl">
-                            {i === 1 ? 'south' : 'east'}
-                          </span>
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
                 {/* Center label */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-on-primary rounded-full w-20 h-20 flex items-center justify-center shadow-xl z-10 hidden lg:flex">
-                  <span className="material-symbols-outlined text-3xl">autorenew</span>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[16rem] h-[16rem] flex items-center justify-center z-10 hidden lg:flex opacity-10">
+                  <img
+                    src="https://pub-104b6174178445459d4ddc456bee78a9.r2.dev/%E5%9C%96%E7%89%87/BeeYuan/%E7%B6%B2%E7%AB%99%E5%9C%96%E7%89%87/cropped-image-1774434377598.webp"
+                    alt=""
+                    aria-hidden="true"
+                    className="w-32 h-32 object-contain center-loop-spin"
+                    loading="lazy"
+                  />
                 </div>
               </div>
             </div>

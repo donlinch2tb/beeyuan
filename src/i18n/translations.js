@@ -175,6 +175,13 @@ const translations = {
     roadmap: {
       sectionTitle: '發展藍圖',
       sectionSub: '從桃園出發，佈局全台',
+      cardBadge: 'Roadmap Vision',
+      cardTitle: '以熱點預測與在地部署，建立可複製的安全防治網絡',
+      cardIntro:
+        '我們以桃園為示範核心，結合前線資料回傳、熱點地圖與跨區部署能力，逐步延伸到校園、社區與山林廊道，形成全台可追蹤、可驗證、可持續優化的防治體系。',
+      mapStart: 'Taoyuan Pilot',
+      mapEnd: 'Nationwide Rollout',
+      mapAlt: 'BeeYuan roadmap map',
       phases: [
         {
           period: '2026 Q1-Q2',
@@ -208,11 +215,49 @@ const translations = {
       ecosystemLinks: ['解決方案', '技術核心', '環境影響報告'],
       legal: '法律聲明',
       legalLinks: ['隱私政策', '服務條款'],
+      cookieSettings: 'Cookie 設定',
       contact: '聯繫我們',
       email: 'contact@bee-yuan.com',
       line: '@BeeYuan',
       domain: 'bee-yuan.com',
       copyright: '© 2026 蜂緣有限公司. 智慧型生態虎頭蜂防治系統.',
+    },
+    cookie: {
+      badge: '隱私偏好',
+      title: '我們僅在您同意後啟用分析與行銷 Cookie',
+      description:
+        '必要 Cookie 用於網站正常運作。分析與行銷 Cookie 將在您同意後才啟用，您可隨時於「Cookie 設定」更改。',
+      panelTitle: 'Cookie 偏好設定',
+      panelDescription: '您可以細分偏好。拒絕不會影響網站基本功能，且可隨時重新調整。',
+      alwaysOn: '必要',
+      currentChoice: '目前選擇',
+      status: {
+        unset: '尚未設定',
+        all: '已接受全部',
+        necessary: '僅必要 Cookie',
+        custom: '自訂偏好',
+      },
+      categories: {
+        necessary: {
+          title: '必要 Cookie',
+          desc: '用於安全、語系、基本互動等核心功能，無法關閉。',
+        },
+        analytics: {
+          title: '分析 Cookie',
+          desc: '協助了解流量與使用行為，用於優化體驗。',
+        },
+        marketing: {
+          title: '行銷 Cookie',
+          desc: '用於投放與衡量廣告成效，建立更相關的內容推薦。',
+        },
+      },
+      actions: {
+        acceptAll: '接受全部',
+        rejectAll: '拒絕全部',
+        customize: '自訂偏好',
+        save: '儲存設定',
+        close: '關閉',
+      },
     },
   },
   en: {
@@ -391,6 +436,13 @@ const translations = {
     roadmap: {
       sectionTitle: 'Roadmap',
       sectionSub: 'Starting from Taoyuan, Scaling Nationwide',
+      cardBadge: 'Roadmap Vision',
+      cardTitle: 'Building a repeatable safety network with hotspot intelligence and local execution',
+      cardIntro:
+        'Starting with Taoyuan as the pilot core, we combine frontline data feedback, hotspot mapping, and regional deployment to expand across campuses, communities, and mountain corridors with a trackable and continuously optimized defense model.',
+      mapStart: 'Taoyuan Pilot',
+      mapEnd: 'Nationwide Rollout',
+      mapAlt: 'BeeYuan roadmap map',
       phases: [
         {
           period: '2026 Q1-Q2',
@@ -424,11 +476,49 @@ const translations = {
       ecosystemLinks: ['Solutions', 'Technology', 'Impact Report'],
       legal: 'Legal',
       legalLinks: ['Privacy Policy', 'Terms of Service'],
+      cookieSettings: 'Cookie Settings',
       contact: 'Contact Us',
       email: 'contact@bee-yuan.com',
       line: '@BeeYuan',
       domain: 'bee-yuan.com',
       copyright: '© 2026 BeeYuan Co., Ltd. Smart Ecological Hornet Defense.',
+    },
+    cookie: {
+      badge: 'Privacy Controls',
+      title: 'Analytics and marketing cookies run only after your consent',
+      description:
+        'Essential cookies keep the site running. Analytics and marketing cookies are disabled until you allow them, and you can change this anytime in Cookie Settings.',
+      panelTitle: 'Cookie Preferences',
+      panelDescription: 'Choose by category. Rejecting optional cookies will not affect core website functionality.',
+      alwaysOn: 'Required',
+      currentChoice: 'Current choice',
+      status: {
+        unset: 'Not set yet',
+        all: 'Accept all',
+        necessary: 'Essential only',
+        custom: 'Custom preferences',
+      },
+      categories: {
+        necessary: {
+          title: 'Essential Cookies',
+          desc: 'Required for security, language, and core site functionality. Always enabled.',
+        },
+        analytics: {
+          title: 'Analytics Cookies',
+          desc: 'Help us understand traffic and usage patterns to improve the product experience.',
+        },
+        marketing: {
+          title: 'Marketing Cookies',
+          desc: 'Used to measure campaign performance and show more relevant messages.',
+        },
+      },
+      actions: {
+        acceptAll: 'Accept all',
+        rejectAll: 'Reject all',
+        customize: 'Customize',
+        save: 'Save preferences',
+        close: 'Close',
+      },
     },
   },
 };

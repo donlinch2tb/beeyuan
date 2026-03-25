@@ -1,4 +1,4 @@
-import { useI18n } from '../i18n/I18nContext';
+import { useI18n } from '../i18n/useI18n';
 import { useReveal } from '../hooks/useReveal';
 
 export default function BusinessModel() {
@@ -21,9 +21,9 @@ export default function BusinessModel() {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-surface-container-low" ref={ref}>
+    <section className="py-12 lg:py-16 bg-surface-container-low" ref={ref}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="mb-16 reveal">
+        <div className="mb-10 reveal">
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface tracking-tight mb-4">
             {t('business.sectionTitle')}
           </h2>

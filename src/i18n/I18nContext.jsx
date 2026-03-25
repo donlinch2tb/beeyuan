@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { useState } from 'react';
+import { I18nContext } from './context';
 import translations from './translations';
-
-const I18nContext = createContext();
 
 export function I18nProvider({ children }) {
   const [lang, setLang] = useState('zh');
@@ -24,8 +23,4 @@ export function I18nProvider({ children }) {
       {children}
     </I18nContext.Provider>
   );
-}
-
-export function useI18n() {
-  return useContext(I18nContext);
 }

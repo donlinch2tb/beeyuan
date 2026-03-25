@@ -1,4 +1,5 @@
-import { useI18n } from '../i18n/I18nContext';
+import { useI18n } from '../i18n/useI18n';
+import { OPEN_SETTINGS_EVENT } from './CookieConsent';
 
 export default function Footer() {
   const { t } = useI18n();
@@ -53,6 +54,14 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))}
+              className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-outline-variant/35 bg-surface-container px-3 py-1.5 font-label text-xs font-semibold text-on-surface hover:bg-surface-container-high transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm text-primary">cookie</span>
+              {t('footer.cookieSettings')}
+            </button>
           </div>
 
           {/* Contact */}

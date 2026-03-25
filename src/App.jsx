@@ -7,6 +7,7 @@ import ESGPage from './pages/ESGPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ScrollToTop from './components/ScrollToTop';
+import CookieConsent from './components/CookieConsent';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <CookieConsent />
       </div>
     </BrowserRouter>
   );

@@ -114,6 +114,11 @@
   50% { transform: translateY(-7px); opacity: 0.28; }
 }
 
+@keyframes routeFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -160; }
+}
+
 /* ===== Base Styles ===== */
 html {
   scroll-behavior: smooth;
@@ -217,6 +222,11 @@ body {
   animation: loopRotate 22s linear infinite;
 }
 
+.center-loop-spin {
+  display: inline-block;
+  animation: loopRotate 8s linear infinite;
+}
+
 .loop-ring {
   fill: none;
   stroke: var(--color-primary);
@@ -249,4 +259,128 @@ body {
 ::selection {
   background-color: var(--color-tertiary-fixed);
   color: var(--color-on-tertiary-fixed);
+}
+
+/* ===== Cookie Consent ===== */
+.cookie-toggle {
+  width: 3rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--color-outline-variant), transparent 20%);
+  background: color-mix(in oklab, var(--color-surface-container-high), white 15%);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.22s ease;
+}
+
+.cookie-toggle .knob {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: var(--color-surface-container-lowest);
+  border: 1px solid color-mix(in oklab, var(--color-outline), transparent 30%);
+  transform: translateX(0.2rem);
+  transition: transform 0.22s ease, background-color 0.22s ease, border-color 0.22s ease;
+  box-shadow: 0 3px 8px rgba(24, 28, 27, 0.18);
+}
+
+.cookie-toggle.on {
+  background: color-mix(in oklab, var(--color-primary), white 18%);
+  border-color: color-mix(in oklab, var(--color-primary), black 8%);
+}
+
+.cookie-toggle.on .knob {
+  transform: translateX(1.4rem);
+  background: var(--color-on-primary);
+  border-color: transparent;
+}
+
+/* ===== Roadmap Map Motion ===== */
+.roadmap-map-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(0, 108, 12, 0.1), rgba(141, 75, 0, 0.06));
+}
+
+.roadmap-path-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.roadmap-route {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 10 12;
+  animation: routeFlow 7.5s linear infinite;
+}
+
+.roadmap-route-amber {
+  stroke: rgba(255, 82, 26, 0.92);
+  stroke-width: 3.5;
+}
+
+.roadmap-route-amber-soft {
+  stroke: rgba(255, 70, 18, 0.86);
+  stroke-width: 2.5;
+  animation-duration: 8.3s;
+}
+
+.roadmap-route-amber-short {
+  stroke: rgba(255, 70, 18, 0.88);
+  stroke-width: 3.2;
+  animation-duration: 6.8s;
+}
+
+.roadmap-route-blue {
+  stroke: rgba(19, 101, 255, 0.94);
+  stroke-width: 4;
+  stroke-dasharray: 12 14;
+  animation-duration: 9.2s;
+}
+
+.roadmap-node {
+  fill: rgba(255, 234, 156, 0.95);
+  filter: drop-shadow(0 0 9px rgba(255, 195, 104, 0.7));
+  animation: nodePulse 2.8s ease-in-out infinite;
+}
+
+.roadmap-node-b { animation-delay: 0.55s; }
+.roadmap-node-c { animation-delay: 1.1s; }
+
+.bee-tail {
+  fill: rgba(255, 194, 87, 0.28);
+  filter: blur(1px);
+}
+
+.bee-tail-2 { fill: rgba(255, 146, 92, 0.24); }
+.bee-tail-3 { fill: rgba(133, 180, 255, 0.24); }
+
+.bee-core {
+  fill: rgba(255, 236, 168, 0.98);
+  stroke: rgba(91, 50, 0, 0.45);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 8px rgba(255, 185, 97, 0.9));
+}
+
+.bee-core-2 {
+  fill: rgba(255, 215, 149, 0.98);
+}
+
+.bee-core-3 {
+  fill: rgba(205, 228, 255, 0.98);
+  stroke: rgba(22, 73, 158, 0.5);
+  filter: drop-shadow(0 0 8px rgba(109, 165, 255, 0.9));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roadmap-route,
+  .roadmap-node {
+    animation: none !important;
+  }
+
+  .bee-flyer {
+    display: none;
+  }
 }

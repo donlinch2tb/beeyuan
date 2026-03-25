@@ -5,11 +5,11 @@ import Roadmap from '../components/Roadmap';
 
 export default function ESGPage() {
   return (
-    <div className="pt-20">
+    <div className="pt-16">
       <ESGCircular />
-      <DataPanel />
       <BusinessModel />
       <Roadmap />
+      <DataPanel />
     </div>
   );
 }

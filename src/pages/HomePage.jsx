@@ -1,6 +1,6 @@
 import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
-import { useI18n } from '../i18n/I18nContext';
+import { useI18n } from '../i18n/useI18n';
 import PainPoints from '../components/PainPoints';
 
 function SolutionFlowBg() {

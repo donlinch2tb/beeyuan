@@ -1,4 +1,4 @@
-import { useI18n } from '../i18n/I18nContext';
+import { useI18n } from '../i18n/useI18n';
 
 export default function ContactPage() {
   const { t } = useI18n();
@@ -8,7 +8,7 @@ export default function ContactPage() {
       <div className="max-w-4xl mx-auto px-6 lg:px-8 py-20">
         {/* Header */}
         <div className="mb-16">
-          <h1 className="text-4xl md:text-5xl font-headline font-bold text-on-surface tracking-tight mb-4">
+          <h1 className="text-4xl md:text-15xl font-headline font-bold text-on-surface tracking-tight mb-4">
             {t('footer.contact')}
           </h1>
           <div className="h-1 w-24 bg-primary mb-6"></div>
