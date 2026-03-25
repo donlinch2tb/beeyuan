@@ -5,6 +5,7 @@ export default function Team() {
   const { t } = useI18n();
   const ref = useReveal();
   const members = t('team.members');
+  const displayMembers = Array.isArray(members) ? members.slice(0, 1) : [];
   const advisors = t('team.advisors');
   const founderPhotoUrl =
     'https://pub-104b6174178445459d4ddc456bee78a9.r2.dev/%E5%9C%96%E7%89%87/BeeYuan/%E7%B6%B2%E7%AB%99%E5%9C%96%E7%89%87/cropped-image-1774435395851.webp';
@@ -24,7 +25,7 @@ export default function Team() {
 
         {/* Team Members */}
         <div className="space-y-6 mb-12">
-          {members.map((member, i) => (
+          {displayMembers.map((member, i) => (
             <div
               key={member.name}
               className="asymmetric-card bg-surface-container-lowest p-8 shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all"
