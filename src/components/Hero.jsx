@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n/I18nContext';
 
 export default function Hero() {
@@ -9,7 +10,6 @@ export default function Hero() {
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full bg-gradient-to-br from-[#0a3d0a] via-[#1a5c1a] to-[#2d7a2d]"></div>
-        {/* Decorative overlay pattern */}
         <div className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
@@ -47,19 +47,19 @@ export default function Hero() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <a
-              href="#solutions"
+            <Link
+              to="/solutions"
               className="bg-tertiary text-on-tertiary px-8 py-4 rounded-lg font-label font-bold text-lg shadow-xl hover:opacity-90 transition-all active:scale-95 flex items-center gap-3 justify-center"
             >
               {t('hero.cta1')}
               <span className="material-symbols-outlined">arrow_forward</span>
-            </a>
-            <a
-              href="#technology"
+            </Link>
+            <Link
+              to="/esg"
               className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-label font-bold text-lg hover:bg-white/20 transition-all border border-white/10 text-center"
             >
               {t('hero.cta2')}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function Hero() {
         <div className="w-full h-full border-[40px] border-primary-fixed rounded-full animate-pulse"></div>
       </div>
 
-      {/* Hexagon pattern decorative */}
+      {/* Hexagon pattern */}
       <div className="absolute top-20 right-10 lg:right-20 hidden md:block opacity-20 pointer-events-none">
         <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
           <polygon points="100,10 170,50 170,130 100,170 30,130 30,50" stroke="#92fa83" strokeWidth="2" fill="none" />
