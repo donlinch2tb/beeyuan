@@ -95,19 +95,24 @@ export default function Solution() {
         </div>
 
         {/* Comparison Table */}
-        <div className="reveal">
-          <h3 className="text-2xl font-headline font-bold text-on-surface mb-8">{compare.title}</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <div className="reveal rounded-3xl bg-surface-container-lowest border-2 border-primary/20 shadow-xl p-6 md:p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="material-symbols-outlined text-primary text-3xl">leaderboard</span>
+            <h3 className="text-2xl md:text-3xl font-headline font-bold text-on-surface">{compare.title}</h3>
+          </div>
+          <div className="overflow-x-auto rounded-2xl border border-outline-variant/20">
+            <table className="w-full bg-surface">
               <thead>
                 <tr>
                   {compare.headers.map((h, i) => (
                     <th
                       key={i}
-                      className={`py-4 px-6 text-left font-headline font-bold text-sm uppercase tracking-wider ${
+                      className={`py-4 px-6 text-left font-headline font-bold text-sm uppercase tracking-wider border-b border-outline-variant/10 ${
                         i === 3
-                          ? 'bg-primary text-on-primary rounded-t-xl'
-                          : 'text-on-surface-variant'
+                          ? 'bg-primary text-on-primary'
+                          : i === 0
+                          ? 'bg-surface-container-highest text-on-surface'
+                          : 'bg-surface-container-low text-on-surface-variant'
                       }`}
                     >
                       {h}
@@ -117,15 +122,15 @@ export default function Solution() {
               </thead>
               <tbody>
                 {compare.rows.map((row, ri) => (
-                  <tr key={ri} className="border-b border-outline-variant/10">
+                  <tr key={ri} className="border-b border-outline-variant/10 odd:bg-surface even:bg-surface-container-low/40">
                     {row.map((cell, ci) => (
                       <td
                         key={ci}
                         className={`py-4 px-6 text-sm font-body ${
                           ci === 0
-                            ? 'font-bold text-on-surface'
+                            ? 'font-bold text-on-surface bg-surface-container-low/70'
                             : ci === 3
-                            ? 'bg-primary-fixed/10 text-primary font-semibold'
+                            ? 'bg-primary-fixed/20 text-primary font-bold'
                             : 'text-on-surface-variant'
                         }`}
                       >
