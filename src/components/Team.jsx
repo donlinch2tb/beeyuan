@@ -6,6 +6,8 @@ export default function Team() {
   const ref = useReveal();
   const members = t('team.members');
   const advisors = t('team.advisors');
+  const founderPhotoUrl =
+    'https://pub-104b6174178445459d4ddc456bee78a9.r2.dev/%E5%9C%96%E7%89%87/BeeYuan/%E7%B6%B2%E7%AB%99%E5%9C%96%E7%89%87/cropped-image-1774435395851.webp';
 
   return (
     <section id="team" className="py-20 lg:py-28 bg-surface" ref={ref}>
@@ -21,20 +23,31 @@ export default function Team() {
         </div>
 
         {/* Team Members */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="space-y-6 mb-12">
           {members.map((member, i) => (
             <div
-              key={i}
-              className="reveal asymmetric-card bg-surface-container-lowest p-8 shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all"
-              style={{ transitionDelay: `${i * 0.15}s` }}
+              key={member.name}
+              className="asymmetric-card bg-surface-container-lowest p-8 shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all"
             >
               <div className="flex items-start gap-6">
-                {/* Avatar placeholder */}
-                <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-primary to-primary-container rounded-2xl flex items-center justify-center text-on-primary shadow-lg">
-                  <span className="material-symbols-outlined text-3xl">person</span>
-                </div>
+                {i === 0 ? (
+                  <div className="w-28 h-28 md:w-32 md:h-32 flex-shrink-0 rounded-2xl overflow-hidden shadow-[0_14px_28px_rgba(24,28,27,0.16)] border border-outline-variant/20 bg-white">
+                    <img
+                      src={founderPhotoUrl}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-primary to-primary-container rounded-2xl flex items-center justify-center text-on-primary shadow-lg">
+                    <span className="material-symbols-outlined text-3xl">person</span>
+                  </div>
+                )}
                 <div className="flex-1">
-                  <h3 className="text-xl font-headline font-bold text-on-surface">{member.name}</h3>
+                  <h3 className={`${i === 0 ? 'text-4xl md:text-5xl' : 'text-2xl'} font-headline font-bold text-on-surface`}>
+                    {member.name}
+                  </h3>
                   <span className="inline-block px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-bold font-label mt-1 mb-3">
                     {member.role}
                   </span>
@@ -63,9 +76,6 @@ export default function Team() {
               </p>
             ))}
           </div>
-          <p className="text-surface/50 text-xs font-label mt-4 pt-4 border-t border-surface/10">
-            {t('team.orgSize')}
-          </p>
         </div>
       </div>
     </section>
