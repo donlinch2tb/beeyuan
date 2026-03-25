@@ -1,10 +1,16 @@
 import { useI18n } from '../i18n/useI18n';
+import SEO from '../components/SEO';
 
 export default function ContactPage() {
   const { t } = useI18n();
 
   return (
     <div className="pt-20 min-h-screen bg-surface">
+      <SEO
+        title="聯絡我們 | 蜂緣 BeeYuan"
+        description="聯絡蜂緣 BeeYuan，取得虎頭蜂防治、場域導入與合作提案資訊。"
+        keywords="聯絡蜂緣,蜂緣客服,虎頭蜂防治合作,BeeYuan contact"
+      />
       <div className="max-w-4xl mx-auto px-6 lg:px-8 py-20">
         {/* Header */}
         <div className="mb-16">

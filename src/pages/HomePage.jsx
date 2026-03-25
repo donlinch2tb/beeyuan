@@ -2,6 +2,7 @@ import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n/useI18n';
 import PainPoints from '../components/PainPoints';
+import SEO from '../components/SEO';
 
 function SolutionFlowBg() {
   return (
@@ -44,6 +45,11 @@ export default function HomePage() {
 
   return (
     <>
+      <SEO
+        title="蜂緣 BeeYuan | 智慧型生態虎頭蜂防治系統"
+        description="蜂緣 BeeYuan 以專利習性誘捕技術，提供智慧型生態虎頭蜂防治方案，結合安全預防、數據管理與 ESG 循環經濟。"
+        keywords="蜂緣,BeeYuan,虎頭蜂,虎頭蜂防治,誘捕系統,ESG,循環經濟,生態防治,智慧農業"
+      />
       <Hero />
       <PainPoints />
       <section className="py-20 lg:py-24 bg-surface-container-low">
