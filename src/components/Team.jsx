@@ -1,0 +1,73 @@
+import { useI18n } from '../i18n/I18nContext';
+import { useReveal } from '../hooks/useReveal';
+
+export default function Team() {
+  const { t } = useI18n();
+  const ref = useReveal();
+  const members = t('team.members');
+  const advisors = t('team.advisors');
+
+  return (
+    <section id="team" className="py-20 lg:py-28 bg-surface" ref={ref}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="mb-16 reveal">
+          <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface tracking-tight mb-4">
+            {t('team.sectionTitle')}
+          </h2>
+          <div className="h-1 w-24 bg-primary mb-6"></div>
+          <p className="text-on-surface-variant max-w-2xl font-body leading-relaxed">
+            {t('team.sectionSub')}
+          </p>
+        </div>
+
+        {/* Team Members */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          {members.map((member, i) => (
+            <div
+              key={i}
+              className="reveal asymmetric-card bg-surface-container-lowest p-8 shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all"
+              style={{ transitionDelay: `${i * 0.15}s` }}
+            >
+              <div className="flex items-start gap-6">
+                {/* Avatar placeholder */}
+                <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-primary to-primary-container rounded-2xl flex items-center justify-center text-on-primary shadow-lg">
+                  <span className="material-symbols-outlined text-3xl">person</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-headline font-bold text-on-surface">{member.name}</h3>
+                  <span className="inline-block px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-bold font-label mt-1 mb-3">
+                    {member.role}
+                  </span>
+                  <div className="space-y-1">
+                    {member.desc.split('\n').map((line, j) => (
+                      <p key={j} className="text-on-surface-variant text-sm font-body flex items-start gap-2">
+                        <span className="material-symbols-outlined text-sm text-secondary mt-0.5">check</span>
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Advisors */}
+        <div className="reveal bg-on-surface text-surface rounded-2xl p-8">
+          <h3 className="text-xl font-headline font-bold mb-4">{advisors.title}</h3>
+          <div className="space-y-2">
+            {advisors.items.map((item, i) => (
+              <p key={i} className="text-surface/80 font-body text-sm flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary-fixed text-sm">school</span>
+                {item}
+              </p>
+            ))}
+          </div>
+          <p className="text-surface/50 text-xs font-label mt-4 pt-4 border-t border-surface/10">
+            {t('team.orgSize')}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
