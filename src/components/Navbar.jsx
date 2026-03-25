@@ -15,6 +15,7 @@ export default function Navbar() {
   }, []);
 
   const links = [
+    { label: t('nav.home'), to: '/' },
     { label: t('nav.solutions'), to: '/solutions' },
     { label: t('nav.esg'), to: '/esg' },
     { label: t('nav.about'), to: '/about' },
@@ -68,7 +69,6 @@ export default function Navbar() {
                 : 'bg-white/10 hover:bg-white/20 text-white'
             }`}
           >
-            <span className="material-symbols-outlined text-base">translate</span>
             {lang === 'zh' ? 'EN' : '中'}
           </button>
 

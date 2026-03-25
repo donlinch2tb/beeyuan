@@ -2,6 +2,7 @@ const translations = {
   zh: {
     nav: {
       brand: '蜂緣',
+      home: '首頁',
       solutions: '解決方案',
       technology: '技術核心',
       esg: 'ESG 永續',
@@ -18,6 +19,26 @@ const translations = {
         { value: '85%', label: '捕獲率' },
         { value: '>10m', label: '安全距離' },
         { value: '<5%', label: '蜜蜂誤捕率' },
+      ],
+    },
+    homeOverview: {
+      sectionTitle: '快速了解',
+      sectionSub: '先用 1 分鐘掌握兩大核心：防治方案與 ESG 循環價值。',
+      cards: [
+        {
+          icon: 'precision_manufacturing',
+          title: '解決方案',
+          summary: '從痛點、技術流程到競爭優勢，完整說明如何降低風險並提升防治效率。',
+          cta: '前往解決方案',
+          to: '/solutions',
+        },
+        {
+          icon: 'eco',
+          title: 'ESG 與商業價值',
+          summary: '了解循環經濟流程、市場規模與商業模式，掌握永續與獲利如何並行。',
+          cta: '前往 ESG',
+          to: '/esg',
+        },
       ],
     },
     pain: {
@@ -197,6 +218,7 @@ const translations = {
   en: {
     nav: {
       brand: 'BeeYuan',
+      home: 'Home',
       solutions: 'Solutions',
       technology: 'Technology',
       esg: 'ESG',
@@ -213,6 +235,26 @@ const translations = {
         { value: '85%', label: 'Capture Rate' },
         { value: '>10m', label: 'Safe Distance' },
         { value: '<5%', label: 'Bee By-catch' },
+      ],
+    },
+    homeOverview: {
+      sectionTitle: 'Quick Overview',
+      sectionSub: 'Understand the two core pillars in one minute: solution execution and ESG-driven value.',
+      cards: [
+        {
+          icon: 'precision_manufacturing',
+          title: 'Solutions',
+          summary: 'Review pain points, implementation flow, and competitive edge to see how risk is reduced.',
+          cta: 'Go to Solutions',
+          to: '/solutions',
+        },
+        {
+          icon: 'eco',
+          title: 'ESG & Business Value',
+          summary: 'Explore circular economy flow, market data, and business model to see sustainability at work.',
+          cta: 'Go to ESG',
+          to: '/esg',
+        },
       ],
     },
     pain: {

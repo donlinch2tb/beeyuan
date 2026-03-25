@@ -1,11 +1,11 @@
-import PainPoints from '../components/PainPoints';
 import Solution from '../components/Solution';
+import Competitive from '../components/Competitive';
 
 export default function SolutionsPage() {
   return (
     <div className="pt-20">
-      <PainPoints />
       <Solution />
+      <Competitive />
     </div>
   );
 }
