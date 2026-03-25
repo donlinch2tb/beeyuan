@@ -2,21 +2,31 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n/I18nContext';
 
 export default function Hero() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const stats = t('hero.stats');
+  const title = t('hero.title');
+  const heroImage = 'https://pub-104b6174178445459d4ddc456bee78a9.r2.dev/%E5%9C%96%E7%89%87/BeeYuan/%E7%B6%B2%E7%AB%99%E5%9C%96%E7%89%87/Gemini_Generated_Image_xf6s6pxf6s6pxf6s_no_watermark.webp';
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-[#0a3d0a] via-[#1a5c1a] to-[#2d7a2d]"></div>
-        <div className="absolute inset-0 opacity-10"
+        <div
+          className="absolute inset-0 bg-right bg-cover"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        ></div>
+        <div
+          className="absolute inset-0"
           style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                              radial-gradient(circle at 75% 75%, rgba(146,250,131,0.1) 0%, transparent 50%)`,
+            background: 'linear-gradient(90deg, rgba(10,61,10,0.96) 0%, rgba(10,61,10,0.9) 30%, rgba(10,61,10,0.62) 46%, rgba(10,61,10,0.28) 56%, rgba(10,61,10,0.08) 62%, rgba(10,61,10,0) 68%)',
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a3d0a]/90 via-[#0a3d0a]/60 to-transparent"></div>
+        <div className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `linear-gradient(90deg, rgba(10,61,10,0.35) 0%, rgba(10,61,10,0.18) 38%, rgba(10,61,10,0) 62%),
+                              radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%)`,
+          }}
+        ></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
@@ -25,9 +35,20 @@ export default function Hero() {
             {t('hero.badge')}
           </span>
 
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-headline font-bold text-white leading-[0.9] tracking-tight mb-6 animate-fade-in-up">
-            {t('hero.title')}
+          <h1
+            className="text-5xl sm:text-6xl md:text-8xl font-headline font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e7ffe2] to-primary-fixed leading-[1.08] md:leading-[1.04] tracking-tight mb-4 animate-fade-in-up"
+            style={{ filter: 'drop-shadow(0 6px 20px rgba(0, 20, 0, 0.35))' }}
+          >
+            {lang === 'zh' ? (
+              <>
+                <span className="block">從致命危機</span>
+                <span className="block">到永續資源</span>
+              </>
+            ) : (
+              title
+            )}
           </h1>
+          <div className="h-1.5 w-44 max-w-[55vw] rounded-full bg-gradient-to-r from-primary-fixed via-white/80 to-transparent shadow-[0_0_24px_rgba(146,250,131,0.45)] mb-8 animate-pulse"></div>
 
           <p className="text-lg md:text-xl text-white/70 max-w-2xl mb-10 font-body leading-relaxed animate-fade-in"
             style={{ animationDelay: '0.2s' }}
