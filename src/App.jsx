@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -11,17 +11,20 @@ import MemberPage from './pages/MemberPage';
 import ActivatePage from './pages/ActivatePage';
 import AdminCodesPage from './pages/AdminCodesPage';
 import AdminSupportPage from './pages/AdminSupportPage';
+import AdminMaintenancePage from './pages/AdminMaintenancePage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import ProductMemberPage from './pages/ProductMemberPage';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
 import ProductMemberGuard from './components/ProductMemberGuard';
+import PageViewTracker from './components/PageViewTracker';
 
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <PageViewTracker />
       <div className="bg-surface text-on-surface font-body">
         <Navbar />
         <main>
@@ -36,6 +39,8 @@ function App() {
             <Route path="/activate" element={<ActivatePage />} />
             <Route path="/admin/codes" element={<AdminCodesPage />} />
             <Route path="/admin/support" element={<AdminSupportPage />} />
+            <Route path="/admin/maintenance" element={<AdminMaintenancePage />} />
+            <Route path="/admin" element={<Navigate to="/admin/maintenance" replace />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route

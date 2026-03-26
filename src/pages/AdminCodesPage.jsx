@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { useAuth } from '../auth/useAuth';
 import { useI18n } from '../i18n/useI18n';
+import AdminNav from '../components/AdminNav';
 
 function csvEscape(value) {
   const raw = String(value ?? '');
@@ -119,6 +120,7 @@ export default function AdminCodesPage() {
       <div className="max-w-5xl mx-auto bg-surface-container-lowest rounded-2xl border border-outline-variant/20 p-8 shadow-sm">
         <h1 className="text-3xl font-headline font-bold mb-2">{text.title}</h1>
         <p className="text-secondary mb-6">{text.subtitle}</p>
+        <AdminNav />
 
         <form onSubmit={onGenerate} className="grid md:grid-cols-2 gap-4">
           <label className="block">
@@ -179,9 +181,6 @@ export default function AdminCodesPage() {
             </button>
             <Link to="/member" className="bg-surface-container-high px-5 py-2.5 rounded-xl font-semibold">
               {lang === 'en' ? 'Back to member' : '回會員頁'}
-            </Link>
-            <Link to="/admin/support" className="bg-surface-container-high px-5 py-2.5 rounded-xl font-semibold">
-              {lang === 'en' ? 'Support console' : '客服台'}
             </Link>
           </div>
         </form>

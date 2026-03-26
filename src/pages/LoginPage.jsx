@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { useI18n } from '../i18n/useI18n';
 
+const TURNSTILE_SCRIPT_ID = 'cf-turnstile-script';
+const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim() || '';
+
 export default function LoginPage() {
   const { lang } = useI18n();
   const navigate = useNavigate();
@@ -22,6 +26,70 @@ export default function LoginPage() {
   const [busy, setBusy] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [notice, setNotice] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaReady, setCaptchaReady] = useState(false);
+  const [captchaNode, setCaptchaNode] = useState(null);
+
+  const captchaEnabled = Boolean(turnstileSiteKey);
+
+  useEffect(() => {
+    if (!captchaEnabled) return;
+    if (typeof window === 'undefined') return;
+
+    let mounted = true;
+    let pollId = null;
+
+    const ensureScript = () => {
+      if (document.getElementById(TURNSTILE_SCRIPT_ID)) return;
+      const script = document.createElement('script');
+      script.id = TURNSTILE_SCRIPT_ID;
+      script.src = TURNSTILE_SCRIPT_SRC;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
+
+    const renderCaptcha = () => {
+      if (!mounted || !captchaNode) return;
+      if (!window.turnstile) return;
+      if (captchaNode.dataset.rendered === '1') return;
+
+      window.turnstile.render(captchaNode, {
+        sitekey: turnstileSiteKey,
+        callback: (token) => {
+          if (!mounted) return;
+          setCaptchaToken(token);
+          setCaptchaReady(true);
+        },
+        'expired-callback': () => {
+          if (!mounted) return;
+          setCaptchaToken('');
+          setCaptchaReady(false);
+        },
+        'error-callback': () => {
+          if (!mounted) return;
+          setCaptchaToken('');
+          setCaptchaReady(false);
+        },
+      });
+      captchaNode.dataset.rendered = '1';
+    };
+
+    ensureScript();
+    renderCaptcha();
+
+    pollId = window.setInterval(() => {
+      renderCaptcha();
+      if (window.turnstile && captchaNode?.dataset.rendered === '1') {
+        window.clearInterval(pollId);
+      }
+    }, 300);
+
+    return () => {
+      mounted = false;
+      if (pollId) window.clearInterval(pollId);
+    };
+  }, [captchaEnabled, captchaNode]);
 
   useEffect(() => {
     if (!loading && user && !adminSecondFactorRequired) {
@@ -51,6 +119,9 @@ export default function LoginPage() {
           adminGateBtn: 'Verify with GitHub',
           signOut: 'Sign out and switch account',
           home: 'Back to home',
+          humanCheck: 'Human verification',
+          humanCheckRequired: 'Please complete human verification first.',
+          captchaOffHint: 'Captcha is disabled in this environment.',
         }
       : {
           title: '會員登入',
@@ -71,12 +142,19 @@ export default function LoginPage() {
           adminGateBtn: '使用 GitHub 進行第二級驗證',
           signOut: '登出並切換帳號',
           home: '回首頁',
+          humanCheck: '人機驗證',
+          humanCheckRequired: '請先完成人機驗證。',
+          captchaOffHint: '此環境未啟用 Captcha。',
         };
 
   const onSubmit = async (event) => {
     event.preventDefault();
     if (mode === 'signup' && !agreed) {
       setErrorMessage(text.agreeRequired);
+      return;
+    }
+    if (captchaEnabled && !captchaToken) {
+      setErrorMessage(text.humanCheckRequired);
       return;
     }
     setBusy(true);
@@ -88,6 +166,8 @@ export default function LoginPage() {
         const { error } = await signIn(form);
         if (error) {
           setErrorMessage(error.message);
+          setCaptchaToken('');
+          setCaptchaReady(false);
           return;
         }
         setNotice(
@@ -99,6 +179,8 @@ export default function LoginPage() {
         const { error } = await signUp(form);
         if (error) {
           setErrorMessage(error.message);
+          setCaptchaToken('');
+          setCaptchaReady(false);
           return;
         }
         setNotice(
@@ -181,9 +263,25 @@ export default function LoginPage() {
             />
           </label>
 
+          <div className="block">
+            <span className="text-sm font-semibold text-secondary">{text.humanCheck}</span>
+            {captchaEnabled ? (
+              <div className="mt-2 rounded-xl border border-outline-variant/40 bg-white p-3">
+                <div ref={setCaptchaNode} />
+                {!captchaReady ? (
+                  <p className="mt-2 text-xs text-secondary">
+                    {lang === 'en' ? 'Waiting for captcha...' : '等待 Captcha 載入...'}
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <p className="mt-1 text-xs text-secondary">{text.captchaOffHint}</p>
+            )}
+          </div>
+
           <button
             type="submit"
-            disabled={busy}
+            disabled={busy || (captchaEnabled && !captchaToken)}
             className="w-full bg-primary text-on-primary px-4 py-2.5 rounded-xl font-semibold disabled:opacity-50"
           >
             {mode === 'signin' ? text.submitSignIn : text.submitSignUp}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { useI18n } from '../i18n/useI18n';
+import AdminNav from '../components/AdminNav';
 
 export default function AdminSupportPage() {
   const { lang } = useI18n();
@@ -178,6 +179,7 @@ export default function AdminSupportPage() {
       <div className="max-w-6xl mx-auto bg-surface-container-lowest rounded-2xl border border-outline-variant/20 p-8 shadow-sm">
         <h1 className="text-3xl font-headline font-bold mb-2">{text.title}</h1>
         <p className="text-secondary mb-6">{text.subtitle}</p>
+        <AdminNav />
 
         <div className="grid md:grid-cols-3 gap-4">
           <label className="md:col-span-2 block">
@@ -206,8 +208,8 @@ export default function AdminSupportPage() {
             >
               {text.logs}
             </button>
-            <Link to="/admin/codes" className="bg-surface-container-high px-4 py-2.5 rounded-xl font-semibold">
-              {lang === 'en' ? 'Code admin' : '產碼台'}
+            <Link to="/member" className="bg-surface-container-high px-4 py-2.5 rounded-xl font-semibold">
+              {lang === 'en' ? 'Back to member' : '回會員頁'}
             </Link>
           </div>
         </div>

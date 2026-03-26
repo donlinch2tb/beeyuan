@@ -135,10 +135,22 @@ create table if not exists public.admin_support_actions (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.admin_code_actions (
+  id bigserial primary key,
+  performed_by uuid not null references auth.users(id),
+  generated_count int not null check (generated_count > 0),
+  product_sku text,
+  note text,
+  batch_id uuid not null,
+  base_url text not null,
+  created_at timestamptz not null default now()
+);
+
 alter table public.activation_codes enable row level security;
 alter table public.activation_events enable row level security;
 alter table public.activation_redeem_attempts enable row level security;
 alter table public.admin_support_actions enable row level security;
+alter table public.admin_code_actions enable row level security;
 
 drop policy if exists "admin can read activation_codes" on public.activation_codes;
 create policy "admin can read activation_codes"
@@ -192,6 +204,19 @@ using (
   )
 );
 
+drop policy if exists "admin can read admin_code_actions" on public.admin_code_actions;
+create policy "admin can read admin_code_actions"
+on public.admin_code_actions
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.member_profiles p
+    where p.user_id = auth.uid() and p.role = 'admin'
+  )
+);
+
 create index if not exists idx_activation_redeem_attempts_user_time
 on public.activation_redeem_attempts (user_id, attempted_at desc);
 
@@ -200,6 +225,9 @@ on public.activation_codes (redeemed_by, redeemed_at desc);
 
 create index if not exists idx_admin_support_actions_created_at
 on public.admin_support_actions (created_at desc);
+
+create index if not exists idx_admin_code_actions_created_at
+on public.admin_code_actions (created_at desc);
 
 -- Internal helper: random readable activation code
 create or replace function public.generate_activation_code(p_length int default 20)
@@ -327,6 +355,23 @@ begin
     batch_id := v_batch;
     return next;
   end loop;
+
+  insert into public.admin_code_actions (
+    performed_by,
+    generated_count,
+    product_sku,
+    note,
+    batch_id,
+    base_url
+  )
+  values (
+    auth.uid(),
+    p_count,
+    p_sku,
+    p_note,
+    v_batch,
+    v_url_base
+  );
 end;
 $$;
 
@@ -972,6 +1017,42 @@ $$;
 
 revoke all on function public.admin_reissue_activation(text, text, text) from public;
 grant execute on function public.admin_reissue_activation(text, text, text) to authenticated;
+
+drop function if exists public.admin_recent_code_actions(int);
+create or replace function public.admin_recent_code_actions(p_limit int default 30)
+returns table (
+  id bigint,
+  generated_count int,
+  product_sku text,
+  note text,
+  batch_id uuid,
+  base_url text,
+  created_at timestamptz
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select
+    a.id,
+    a.generated_count,
+    a.product_sku,
+    a.note,
+    a.batch_id,
+    a.base_url,
+    a.created_at
+  from public.admin_code_actions a
+  where exists (
+    select 1
+    from public.member_profiles p
+    where p.user_id = auth.uid() and p.role = 'admin'
+  )
+  order by a.created_at desc
+  limit greatest(1, least(coalesce(p_limit, 30), 200));
+$$;
+
+revoke all on function public.admin_recent_code_actions(int) from public;
+grant execute on function public.admin_recent_code_actions(int) to authenticated;
 
 -- Admin RPC: recent support action logs
 drop function if exists public.admin_support_recent_actions(int);

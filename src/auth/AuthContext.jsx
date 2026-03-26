@@ -288,6 +288,67 @@ export function AuthProvider({ children }) {
     return { data, error };
   };
 
+  const adminGetHeartbeatStatus = async () => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_get_heartbeat_status');
+    return { data, error };
+  };
+
+  const adminSetHeartbeatEnabled = async (enabled) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_set_heartbeat_enabled', {
+      p_enabled: Boolean(enabled),
+    });
+    return { data, error };
+  };
+
+  const adminSetMaintenanceBundleEnabled = async (enabled) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_set_maintenance_bundle_enabled', {
+      p_enabled: Boolean(enabled),
+    });
+    return { data, error };
+  };
+
+  const adminGetMaintenanceMetrics = async (hours = 24) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_get_maintenance_metrics', {
+      p_hours: Number(hours),
+    });
+    return { data, error };
+  };
+
+  const adminTopPageViews = async ({ hours = 24, limit = 10 } = {}) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_top_page_views', {
+      p_hours: Number(hours),
+      p_limit: Number(limit),
+    });
+    return { data, error };
+  };
+
+  const adminRecentMaintenanceActions = async (limit = 20) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_recent_maintenance_actions', {
+      p_limit: Number(limit),
+    });
+    return { data, error };
+  };
+
+  const adminRecentCodeActions = async (limit = 30) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_recent_code_actions', {
+      p_limit: Number(limit),
+    });
+    return { data, error };
+  };
+
+  const runSystemHeartbeat = async (source = 'manual') => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('run_system_heartbeat', { p_source: source });
+    return { data, error };
+  };
+
   const linkGithubForAdmin = async () => {
     if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
     const redirectTo = `${window.location.origin}/member`;
@@ -386,6 +447,14 @@ export function AuthProvider({ children }) {
     adminRevokeActivation,
     adminReissueActivation,
     adminSupportRecentActions,
+    adminGetHeartbeatStatus,
+    adminSetHeartbeatEnabled,
+    adminSetMaintenanceBundleEnabled,
+    adminGetMaintenanceMetrics,
+    adminTopPageViews,
+    adminRecentMaintenanceActions,
+    adminRecentCodeActions,
+    runSystemHeartbeat,
     linkGithubForAdmin,
     refreshProfile: () => fetchProfile(user),
     refreshOwnedProducts: () => fetchOwnedProducts(user),

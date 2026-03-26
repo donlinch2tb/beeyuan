@@ -316,6 +316,11 @@ export default function MemberPage() {
             {lang === 'en' ? 'Support console' : '客服台'}
           </Link>
         ) : null}
+        {isAdmin && hasGithubIdentity ? (
+          <Link to="/admin/maintenance" className="inline-block mt-6 ml-4 text-sm text-primary hover:opacity-80">
+            {lang === 'en' ? 'Maintenance' : '維運管理'}
+          </Link>
+        ) : null}
         {isVerifiedProductMember ? (
           <Link to="/member/product" className="inline-block mt-6 ml-4 text-sm text-primary hover:opacity-80">
             {text.productZone}
