@@ -10,6 +10,7 @@ export default function ActivatePage() {
   const [codeInput, setCodeInput] = useState(searchParams.get('code') ?? '');
   const [mode, setMode] = useState('signin');
   const [form, setForm] = useState({ email: '', password: '' });
+  const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,6 +32,11 @@ export default function ActivatePage() {
           password: 'Password',
           submitSignin: 'Login',
           submitSignup: 'Register',
+          agreePrefix: 'I agree to the',
+          privacy: 'Privacy Policy',
+          and: 'and',
+          terms: 'Terms of Service',
+          agreeRequired: 'Please agree to the Privacy Policy and Terms of Service first.',
           memberTier: 'Membership tier',
           tierMember: 'Member',
           tierProduct: 'Product Member',
@@ -47,6 +53,11 @@ export default function ActivatePage() {
           password: '密碼',
           submitSignin: '登入',
           submitSignup: '註冊帳號',
+          agreePrefix: '我已閱讀並同意',
+          privacy: '隱私政策',
+          and: '與',
+          terms: '服務條款',
+          agreeRequired: '請先勾選同意隱私政策與服務條款。',
           memberTier: '會員等級',
           tierMember: '一般會員',
           tierProduct: '產品會員',
@@ -75,12 +86,20 @@ export default function ActivatePage() {
       return;
     }
 
-    setMessage(lang === 'en' ? 'Activation successful.' : '啟用成功，已升級為產品會員。');
+    setMessage(
+      lang === 'en'
+        ? `Activation successful. Serial: ${row.public_serial ?? '-'}`
+        : `啟用成功，已升級為產品會員。產品序號：${row.public_serial ?? '-'}`
+    );
     setBusy(false);
   };
 
   const onAuthSubmit = async (event) => {
     event.preventDefault();
+    if (mode === 'signup' && !agreed) {
+      setErrorMessage(text.agreeRequired);
+      return;
+    }
     setBusy(true);
     setErrorMessage('');
     setMessage('');
@@ -205,6 +224,27 @@ export default function ActivatePage() {
               >
                 {mode === 'signin' ? text.submitSignin : text.submitSignup}
               </button>
+
+              {mode === 'signup' ? (
+                <label className="flex items-start gap-2 text-sm text-secondary">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-1"
+                  />
+                  <span>
+                    {text.agreePrefix}{' '}
+                    <Link to="/privacy" className="text-primary hover:opacity-80">
+                      {text.privacy}
+                    </Link>{' '}
+                    {text.and}{' '}
+                    <Link to="/terms" className="text-primary hover:opacity-80">
+                      {text.terms}
+                    </Link>
+                  </span>
+                </label>
+              ) : null}
             </form>
           </>
         )}

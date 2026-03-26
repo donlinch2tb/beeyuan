@@ -1,5 +1,6 @@
 import { useI18n } from '../i18n/useI18n';
 import { OPEN_SETTINGS_EVENT } from './CookieConsent';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   const { t } = useI18n();
@@ -45,15 +46,18 @@ export default function Footer() {
             <h5 className="font-headline font-bold text-sm tracking-wider uppercase text-on-surface">
               {t('footer.legal')}
             </h5>
-            <ul className="flex flex-col gap-2 font-body text-sm">
-              {t('footer.legalLinks').map((link, i) => (
-                <li key={i}>
-                  <a href="#" className="text-secondary hover:text-tertiary transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
+              <ul className="flex flex-col gap-2 font-body text-sm">
+                {t('footer.legalLinks').map((link, i) => (
+                  <li key={i}>
+                    <Link
+                      to={i === 0 ? '/privacy' : '/terms'}
+                      className="text-secondary hover:text-tertiary transition-colors"
+                    >
+                      {link}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))}

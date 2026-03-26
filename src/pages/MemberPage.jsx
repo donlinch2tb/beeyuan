@@ -80,9 +80,12 @@ export default function MemberPage() {
     session,
     user,
     profile,
+    ownedProducts,
+    ownedProductsState,
     loading,
     isAdmin,
     isProductMember,
+    isVerifiedProductMember,
     hasGithubIdentity,
     adminSecondFactorRequired,
     updateProfile,
@@ -102,6 +105,8 @@ export default function MemberPage() {
           email: 'Email',
           role: 'Role',
           membershipTier: 'Membership Tier',
+          tierVerified: 'Verified',
+          tierPending: 'Pending Verification',
           displayName: 'Display Name',
           phone: 'Phone',
           company: 'Company',
@@ -111,6 +116,12 @@ export default function MemberPage() {
           roleAdmin: 'Admin',
           tierMember: 'Member',
           tierProduct: 'Product Member',
+          ownedProducts: 'Owned Products',
+          noProducts: 'No activated product yet.',
+          noProductsHint: 'Go to the activation page to bind your product.',
+          ownedProductsLoadFailed: 'Unable to load product records right now. Please try again later.',
+          activateNow: 'Activate now',
+          productZone: 'Product Member Zone',
         }
       : {
           title: '會員資料',
@@ -118,6 +129,8 @@ export default function MemberPage() {
           email: '電子郵件',
           role: '角色',
           membershipTier: '會員等級',
+          tierVerified: '已驗證',
+          tierPending: '待驗證',
           displayName: '顯示名稱',
           phone: '電話',
           company: '公司',
@@ -127,6 +140,12 @@ export default function MemberPage() {
           roleAdmin: '管理員',
           tierMember: '一般會員',
           tierProduct: '產品會員',
+          ownedProducts: '已綁定產品',
+          noProducts: '目前尚無已啟用產品。',
+          noProductsHint: '請前往產品啟用頁完成綁定。',
+          ownedProductsLoadFailed: '目前無法讀取產品綁定資料，請稍後再試。',
+          activateNow: '立即啟用產品',
+          productZone: '產品會員專區',
         };
 
   if (loading) {
@@ -201,21 +220,27 @@ export default function MemberPage() {
             />
           </label>
 
-          <label className="block">
-            <span className="text-sm font-semibold text-secondary">{text.role}</span>
-            <input
-              type="text"
-              value={profile?.role === 'admin' ? text.roleAdmin : text.roleMember}
-              disabled
-              className="mt-1 w-full rounded-xl border border-outline-variant/40 bg-surface-container-high px-4 py-2.5"
-            />
-          </label>
+          {isAdmin ? (
+            <label className="block">
+              <span className="text-sm font-semibold text-secondary">{text.role}</span>
+              <input
+                type="text"
+                value={text.roleAdmin}
+                disabled
+                className="mt-1 w-full rounded-xl border border-outline-variant/40 bg-surface-container-high px-4 py-2.5"
+              />
+            </label>
+          ) : null}
 
           <label className="block">
             <span className="text-sm font-semibold text-secondary">{text.membershipTier}</span>
             <input
               type="text"
-              value={isProductMember ? text.tierProduct : text.tierMember}
+              value={
+                isProductMember
+                  ? `${text.tierProduct} (${isVerifiedProductMember ? text.tierVerified : text.tierPending})`
+                  : text.tierMember
+              }
               disabled
               className="mt-1 w-full rounded-xl border border-outline-variant/40 bg-surface-container-high px-4 py-2.5"
             />
@@ -271,6 +296,47 @@ export default function MemberPage() {
             {lang === 'en' ? 'Activation code admin' : '啟用碼管理'}
           </Link>
         ) : null}
+        {isAdmin && hasGithubIdentity ? (
+          <Link to="/admin/support" className="inline-block mt-6 ml-4 text-sm text-primary hover:opacity-80">
+            {lang === 'en' ? 'Support console' : '客服台'}
+          </Link>
+        ) : null}
+        {isVerifiedProductMember ? (
+          <Link to="/member/product" className="inline-block mt-6 ml-4 text-sm text-primary hover:opacity-80">
+            {text.productZone}
+          </Link>
+        ) : null}
+
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-3">{text.ownedProducts}</h2>
+          {ownedProductsState === 'error' ? (
+            <p className="text-sm text-error">{text.ownedProductsLoadFailed}</p>
+          ) : ownedProducts?.length ? (
+            <div className="space-y-2">
+              {ownedProducts.map((item) => (
+                <div key={`${item.public_serial}-${item.redeemed_at ?? ''}`} className="rounded-lg bg-surface-container px-4 py-3 text-sm">
+                  <div>SN: {item.public_serial ?? '-'}</div>
+                  <div>{lang === 'en' ? 'SKU' : '型號'}: {item.product_sku || '-'}</div>
+                  <div>{lang === 'en' ? 'Code' : '啟用碼'}: {item.code_mask || '****'}</div>
+                  <div>
+                    {lang === 'en' ? 'Activated at' : '啟用時間'}:{' '}
+                    {item.redeemed_at ? new Date(item.redeemed_at).toLocaleString() : '-'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : ownedProductsState === 'unbound' ? (
+            <div className="space-y-2">
+              <p className="text-sm text-secondary">{text.noProducts}</p>
+              <p className="text-sm text-secondary">{text.noProductsHint}</p>
+              <Link to="/activate" className="inline-block text-sm text-primary hover:opacity-80">
+                {text.activateNow}
+              </Link>
+            </div>
+          ) : (
+            <p className="text-sm text-secondary">{text.noProducts}</p>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -6,6 +6,7 @@ This project now includes:
 - Member profile page: `/member`
 - Product activation page: `/activate`
 - Admin activation code page: `/admin/codes` (admin + GitHub second-step required)
+- Admin support page: `/admin/support` (admin + GitHub second-step required)
 - Supabase auth:
   - Public users: no login required for normal browsing
   - Member users: email/password login
@@ -38,8 +39,10 @@ This creates:
 - `role` (`member` / `admin`)
 - `membership_tier` (`member` / `product_member`)
 - `public.activation_codes` + `public.activation_events`
+- `public_serial` for post-sale support tracking
 - RPC: `redeem_activation_code`
 - RPC: `admin_generate_activation_codes`
+- RPC: `my_owned_products`
 - RLS policies for per-user profile read/write
 - Privileged-field guards (members cannot self-promote role/tier)
 - Activation redeem rate-limit logs (`activation_redeem_attempts`)
@@ -75,9 +78,20 @@ npm run dev
 ## Product activation flow
 
 1. Admin opens `/admin/codes`
-2. Generate random activation codes
-3. Export CSV (code + activation URL)
+2. Generate random activation codes + public serials
+3. Export CSV (public serial + code + activation URL)
 4. Put code/QR in shipped product
 5. User opens QR (`/activate?code=...`)
 6. User login/register and redeem
-7. Account upgrades to `product_member`
+7. Code is bound to that account (cannot be claimed by another account)
+8. Account upgrades to `product_member`
+
+## Admin support console (MVP)
+
+`/admin/support` supports:
+
+- Lookup by `public_serial` or owner email
+- Transfer ownership to another account email
+- Revoke serial
+- Reissue new code/serial for support cases
+- Recent support action logs

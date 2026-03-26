@@ -6,6 +6,8 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [ownedProducts, setOwnedProducts] = useState([]);
+  const [ownedProductsState, setOwnedProductsState] = useState('idle');
   const [loading, setLoading] = useState(true);
   const isSigningOutRef = useRef(false);
   const authEnabled = Boolean(supabase);
@@ -35,6 +37,31 @@ export function AuthProvider({ children }) {
     }
 
     setProfile(data ?? null);
+  }, []);
+
+  const fetchOwnedProducts = useCallback(async (currentUser) => {
+    if (!supabase || !currentUser) {
+      setOwnedProducts([]);
+      setOwnedProductsState('idle');
+      return;
+    }
+
+    const { data, error } = await supabase.rpc('my_owned_products');
+    if (error) {
+      const message = String(error.message ?? '');
+      if (message.toLowerCase().includes('verified product member required')) {
+        setOwnedProducts([]);
+        setOwnedProductsState('unbound');
+        return;
+      }
+      console.warn('fetchOwnedProducts failed:', error.message);
+      setOwnedProducts([]);
+      setOwnedProductsState('error');
+      return;
+    }
+
+    setOwnedProducts(Array.isArray(data) ? data : []);
+    setOwnedProductsState('ready');
   }, []);
 
   const ensureProfile = useCallback(async (currentUser) => {
@@ -91,12 +118,16 @@ export function AuthProvider({ children }) {
     const syncProfile = async () => {
       if (!userId || !currentUser) {
         setProfile(null);
+        setOwnedProducts([]);
+        setOwnedProductsState('idle');
         return;
       }
 
       await ensureProfile(currentUser);
       if (!isMounted) return;
       await fetchProfile(currentUser);
+      if (!isMounted) return;
+      await fetchOwnedProducts(currentUser);
     };
 
     syncProfile();
@@ -104,7 +135,7 @@ export function AuthProvider({ children }) {
     return () => {
       isMounted = false;
     };
-  }, [user, ensureProfile, fetchProfile]);
+  }, [user, ensureProfile, fetchProfile, fetchOwnedProducts]);
 
   const signIn = async ({ email, password }) => {
     if (!supabase) {
@@ -145,6 +176,7 @@ export function AuthProvider({ children }) {
         setSession(null);
         setUser(null);
         setProfile(null);
+        setOwnedProducts([]);
       }
       return { error };
     } finally {
@@ -180,6 +212,10 @@ export function AuthProvider({ children }) {
     }
 
     const { data, error } = await supabase.rpc('redeem_activation_code', { p_code: clean });
+    if (!error) {
+      await fetchProfile(user);
+      await fetchOwnedProducts(user);
+    }
     return { data, error };
   };
 
@@ -208,6 +244,47 @@ export function AuthProvider({ children }) {
       p_base_url: cleanBaseUrl,
     });
 
+    return { data, error };
+  };
+
+  const adminLookupActivation = async (query) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_lookup_activation', { p_query: query });
+    return { data, error };
+  };
+
+  const adminTransferActivation = async ({ publicSerial, toEmail, reason }) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_transfer_activation', {
+      p_public_serial: publicSerial,
+      p_to_email: toEmail,
+      p_reason: reason || null,
+    });
+    return { data, error };
+  };
+
+  const adminRevokeActivation = async ({ publicSerial, reason }) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_revoke_activation', {
+      p_public_serial: publicSerial,
+      p_reason: reason || null,
+    });
+    return { data, error };
+  };
+
+  const adminReissueActivation = async ({ publicSerial, reason, baseUrl }) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_reissue_activation', {
+      p_public_serial: publicSerial,
+      p_reason: reason || null,
+      p_base_url: baseUrl || 'https://www.bee-yuan.com',
+    });
+    return { data, error };
+  };
+
+  const adminSupportRecentActions = async (limit = 50) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_support_recent_actions', { p_limit: limit });
     return { data, error };
   };
 
@@ -282,16 +359,20 @@ export function AuthProvider({ children }) {
   const hasGithubIdentity = Boolean(user?.identities?.some((item) => item.provider === 'github'));
   const isAdmin = profile?.role === 'admin';
   const isProductMember = profile?.membership_tier === 'product_member';
+  const isVerifiedProductMember = isProductMember && ownedProducts.length > 0;
   const adminSecondFactorRequired = Boolean(user && isAdmin && !hasGithubIdentity);
 
   const value = {
     session,
     user,
     profile,
+    ownedProducts,
+    ownedProductsState,
     loading,
     authEnabled,
     isAdmin,
     isProductMember,
+    isVerifiedProductMember,
     hasGithubIdentity,
     adminSecondFactorRequired,
     signIn,
@@ -300,8 +381,14 @@ export function AuthProvider({ children }) {
     updateProfile,
     redeemActivationCode,
     generateActivationCodes,
+    adminLookupActivation,
+    adminTransferActivation,
+    adminRevokeActivation,
+    adminReissueActivation,
+    adminSupportRecentActions,
     linkGithubForAdmin,
     refreshProfile: () => fetchProfile(user),
+    refreshOwnedProducts: () => fetchOwnedProducts(user),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

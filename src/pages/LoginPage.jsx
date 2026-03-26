@@ -18,6 +18,7 @@ export default function LoginPage() {
   } = useAuth();
   const [mode, setMode] = useState('signin');
   const [form, setForm] = useState({ email: '', password: '' });
+  const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [notice, setNotice] = useState('');
@@ -39,6 +40,11 @@ export default function LoginPage() {
           password: 'Password',
           submitSignIn: 'Login',
           submitSignUp: 'Register',
+          agreePrefix: 'I agree to the',
+          privacy: 'Privacy Policy',
+          and: 'and',
+          terms: 'Terms of Service',
+          agreeRequired: 'Please agree to the Privacy Policy and Terms of Service first.',
           adminGateTitle: 'Admin Second-Step Verification',
           adminGateDesc:
             'Your account is admin role. Please complete GitHub identity linking to unlock admin session.',
@@ -55,6 +61,11 @@ export default function LoginPage() {
           password: '密碼',
           submitSignIn: '登入帳號',
           submitSignUp: '建立帳號',
+          agreePrefix: '我已閱讀並同意',
+          privacy: '隱私政策',
+          and: '與',
+          terms: '服務條款',
+          agreeRequired: '請先勾選同意隱私政策與服務條款。',
           adminGateTitle: '管理員第二級驗證',
           adminGateDesc: '你是管理員角色，請完成 GitHub 身分綁定，才會啟用管理員登入。',
           adminGateBtn: '使用 GitHub 進行第二級驗證',
@@ -64,6 +75,10 @@ export default function LoginPage() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    if (mode === 'signup' && !agreed) {
+      setErrorMessage(text.agreeRequired);
+      return;
+    }
     setBusy(true);
     setErrorMessage('');
     setNotice('');
@@ -173,6 +188,27 @@ export default function LoginPage() {
           >
             {mode === 'signin' ? text.submitSignIn : text.submitSignUp}
           </button>
+
+          {mode === 'signup' ? (
+            <label className="flex items-start gap-2 text-sm text-secondary">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                {text.agreePrefix}{' '}
+                <Link to="/privacy" className="text-primary hover:opacity-80">
+                  {text.privacy}
+                </Link>{' '}
+                {text.and}{' '}
+                <Link to="/terms" className="text-primary hover:opacity-80">
+                  {text.terms}
+                </Link>
+              </span>
+            </label>
+          ) : null}
         </form>
 
         {notice ? <p className="mt-4 text-sm text-primary">{notice}</p> : null}

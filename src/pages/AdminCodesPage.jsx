@@ -59,9 +59,14 @@ export default function AdminCodesPage() {
 
   const csvContent = useMemo(() => {
     if (!rows.length) return '';
-    const header = ['code', 'activation_url', 'batch_id'];
+    const header = ['public_serial', 'code', 'activation_url', 'batch_id'];
     const body = rows.map((r) =>
-      [csvEscape(r.code), csvEscape(r.activation_url), csvEscape(r.batch_id)].join(',')
+      [
+        csvEscape(r.public_serial),
+        csvEscape(r.code),
+        csvEscape(r.activation_url),
+        csvEscape(r.batch_id),
+      ].join(',')
     );
     return [header.join(','), ...body].join('\n');
   }, [rows]);
@@ -175,6 +180,9 @@ export default function AdminCodesPage() {
             <Link to="/member" className="bg-surface-container-high px-5 py-2.5 rounded-xl font-semibold">
               {lang === 'en' ? 'Back to member' : '回會員頁'}
             </Link>
+            <Link to="/admin/support" className="bg-surface-container-high px-5 py-2.5 rounded-xl font-semibold">
+              {lang === 'en' ? 'Support console' : '客服台'}
+            </Link>
           </div>
         </form>
 
@@ -184,6 +192,7 @@ export default function AdminCodesPage() {
           <div className="mt-8 grid lg:grid-cols-2 gap-4">
             {rows.map((row) => (
               <div key={row.code} className="rounded-xl border border-outline-variant/30 p-4">
+                <div className="text-sm font-semibold mb-1">SN: {row.public_serial ?? '-'}</div>
                 <div className="font-mono text-sm break-all">{row.code}</div>
                 {isSafeActivationUrl(row.activation_url) ? (
                   <a
