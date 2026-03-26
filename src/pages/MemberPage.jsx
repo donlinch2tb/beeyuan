@@ -237,7 +237,7 @@ export default function MemberPage() {
             <input
               type="text"
               value={
-                isProductMember
+                isProductMember || isVerifiedProductMember
                   ? `${text.tierProduct} (${isVerifiedProductMember ? text.tierVerified : text.tierPending})`
                   : text.tierMember
               }

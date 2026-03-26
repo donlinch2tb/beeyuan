@@ -7,6 +7,17 @@ alter table public.member_profiles
 add column if not exists membership_tier text not null default 'member'
 check (membership_tier in ('member', 'product_member'));
 
+-- Backfill: users with redeemed products should be product_member
+update public.member_profiles p
+set membership_tier = 'product_member'
+where exists (
+  select 1
+  from public.activation_codes c
+  where c.redeemed_by = p.user_id
+    and c.status = 'redeemed'
+)
+and p.membership_tier <> 'product_member';
+
 -- Keep privileged fields immutable from client-side authenticated writes.
 create or replace function public.guard_member_profile_privileged_fields()
 returns trigger
@@ -425,19 +436,12 @@ language sql
 security definer
 set search_path = public
 as $$
-  select
-    exists (
-      select 1
-      from public.member_profiles p
-      where p.user_id = p_uid
-        and p.membership_tier = 'product_member'
-    )
-    and exists (
-      select 1
-      from public.activation_codes c
-      where c.redeemed_by = p_uid
-        and c.status = 'redeemed'
-    );
+  select exists (
+    select 1
+    from public.activation_codes c
+    where c.redeemed_by = p_uid
+      and c.status = 'redeemed'
+  );
 $$;
 
 revoke all on function public.is_verified_product_member(uuid) from public;

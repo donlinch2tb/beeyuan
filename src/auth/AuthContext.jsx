@@ -359,7 +359,7 @@ export function AuthProvider({ children }) {
   const hasGithubIdentity = Boolean(user?.identities?.some((item) => item.provider === 'github'));
   const isAdmin = profile?.role === 'admin';
   const isProductMember = profile?.membership_tier === 'product_member';
-  const isVerifiedProductMember = isProductMember && ownedProducts.length > 0;
+  const isVerifiedProductMember = ownedProducts.length > 0;
   const adminSecondFactorRequired = Boolean(user && isAdmin && !hasGithubIdentity);
 
   const value = {
