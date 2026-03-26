@@ -8,8 +8,14 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const isSigningOutRef = useRef(false);
+  const authEnabled = Boolean(supabase);
 
   const fetchProfile = useCallback(async (currentUser) => {
+    if (!supabase) {
+      setProfile(null);
+      return;
+    }
+
     if (!currentUser) {
       setProfile(null);
       return;
@@ -32,6 +38,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const ensureProfile = useCallback(async (currentUser) => {
+    if (!supabase) return;
     if (!currentUser) return;
 
     const displayName =
@@ -54,6 +61,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
     const {
@@ -69,7 +81,7 @@ export function AuthProvider({ children }) {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [authEnabled]);
 
   useEffect(() => {
     let isMounted = true;
@@ -95,11 +107,17 @@ export function AuthProvider({ children }) {
   }, [user, ensureProfile, fetchProfile]);
 
   const signIn = async ({ email, password }) => {
+    if (!supabase) {
+      return { error: new Error('Authentication is disabled (Supabase env missing).') };
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
   };
 
   const signUp = async ({ email, password }) => {
+    if (!supabase) {
+      return { error: new Error('Authentication is disabled (Supabase env missing).') };
+    }
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -111,6 +129,12 @@ export function AuthProvider({ children }) {
   };
 
   const signOut = async () => {
+    if (!supabase) {
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      return { error: null };
+    }
     if (isSigningOutRef.current) {
       return { error: null };
     }
@@ -129,6 +153,7 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = async (payload) => {
+    if (!supabase) return { error: new Error('Supabase is not configured') };
     if (!user) return { error: new Error('Not authenticated') };
 
     const { error } = await supabase
@@ -148,6 +173,7 @@ export function AuthProvider({ children }) {
   };
 
   const redeemActivationCode = async (code) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
     const clean = String(code ?? '').trim().toUpperCase();
     if (!clean) {
       return { data: null, error: new Error('Activation code is required') };
@@ -158,6 +184,7 @@ export function AuthProvider({ children }) {
   };
 
   const generateActivationCodes = async ({ count, sku, note, baseUrl }) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
     const cleanBaseUrl = String(baseUrl ?? '').trim();
     const allowedBaseUrls = new Set([
       'https://www.bee-yuan.com',
@@ -185,6 +212,7 @@ export function AuthProvider({ children }) {
   };
 
   const linkGithubForAdmin = async () => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
     const redirectTo = `${window.location.origin}/member`;
     if (import.meta.env.DEV) {
       console.info('[auth] linkGithubForAdmin start', {
@@ -261,6 +289,7 @@ export function AuthProvider({ children }) {
     user,
     profile,
     loading,
+    authEnabled,
     isAdmin,
     isProductMember,
     hasGithubIdentity,
