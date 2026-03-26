@@ -27,6 +27,7 @@ export default function AdminSupportPage() {
   const [reissueResult, setReissueResult] = useState(null);
   const [transferEmail, setTransferEmail] = useState('');
   const [reason, setReason] = useState('');
+  const latestReissuedSerial = reissueResult?.newPublicSerial || '';
 
   const text =
     lang === 'en'
@@ -158,14 +159,13 @@ export default function AdminSupportPage() {
       };
       setReissueResult(details);
       setMessage(details.message);
-      setQuery(details.newPublicSerial || query);
     } else {
       setReissueResult(null);
       setMessage(first?.message || 'Done');
     }
 
     if (kind === 'reissue') {
-      await lookup(first?.new_public_serial || serial, true);
+      await lookup(serial, true);
     } else {
       await lookup(undefined, true);
     }
@@ -283,6 +283,18 @@ export default function AdminSupportPage() {
             <div className="break-all">
               URL: {reissueResult.activationUrl || '-'}
             </div>
+            {reissueResult.newPublicSerial ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery(reissueResult.newPublicSerial);
+                  setSelectedSerial(reissueResult.newPublicSerial);
+                }}
+                className="mt-3 bg-surface-container-high px-3 py-2 rounded-lg text-sm font-semibold"
+              >
+                {lang === 'en' ? 'Use new serial in form' : '帶入新序號到表單'}
+              </button>
+            ) : null}
           </div>
         ) : null}
 
@@ -290,15 +302,33 @@ export default function AdminSupportPage() {
           <h2 className="text-lg font-semibold mb-2">{lang === 'en' ? 'Lookup Results' : '查詢結果'}</h2>
           {rows.length ? (
             <div className="space-y-3">
-              {rows.map((row) => {
+              {rows
+                .slice()
+                .sort((a, b) => {
+                  if (!latestReissuedSerial) return 0;
+                  if (a.public_serial === latestReissuedSerial) return -1;
+                  if (b.public_serial === latestReissuedSerial) return 1;
+                  return 0;
+                })
+                .map((row) => {
                 const active = selectedSerial === row.public_serial;
+                const isLatestReissue = latestReissuedSerial && row.public_serial === latestReissuedSerial;
                 return (
                   <div
                     key={`${row.code_id}-${row.public_serial}`}
                     className={`rounded-xl border p-4 ${
-                      active ? 'border-primary bg-primary-fixed/20' : 'border-outline-variant/30'
+                      active
+                        ? 'border-primary bg-primary-fixed/20'
+                        : isLatestReissue
+                          ? 'border-tertiary bg-tertiary-fixed/20'
+                          : 'border-outline-variant/30'
                     }`}
                   >
+                    {isLatestReissue ? (
+                      <div className="inline-block mb-2 rounded-full bg-tertiary text-on-tertiary px-2.5 py-1 text-xs font-semibold">
+                        {lang === 'en' ? 'Latest Reissue' : '最新重發'}
+                      </div>
+                    ) : null}
                     <div className="text-sm">SN: {row.public_serial}</div>
                     <div className="text-sm">Status: {row.status}</div>
                     <div className="text-sm">Owner: {row.owner_email || '-'}</div>

@@ -7,17 +7,6 @@ alter table public.member_profiles
 add column if not exists membership_tier text not null default 'member'
 check (membership_tier in ('member', 'product_member'));
 
--- Backfill: users with redeemed products should be product_member
-update public.member_profiles p
-set membership_tier = 'product_member'
-where exists (
-  select 1
-  from public.activation_codes c
-  where c.redeemed_by = p.user_id
-    and c.status = 'redeemed'
-)
-and p.membership_tier <> 'product_member';
-
 -- Keep privileged fields immutable from client-side authenticated writes.
 create or replace function public.guard_member_profile_privileged_fields()
 returns trigger
@@ -76,6 +65,47 @@ alter table public.activation_codes alter column public_serial set not null;
 
 create unique index if not exists uq_activation_codes_public_serial
 on public.activation_codes (public_serial);
+
+-- Backfill: users with redeemed products should be product_member
+update public.member_profiles p
+set membership_tier = 'product_member'
+where exists (
+  select 1
+  from public.activation_codes c
+  where c.redeemed_by = p.user_id
+    and c.status = 'redeemed'
+)
+and p.membership_tier <> 'product_member';
+
+-- Backfill: relink historical reissued codes that were left unbound
+with relink_candidates as (
+  select
+    new_code.id as new_code_id,
+    old_code.redeemed_by as owner_user_id
+  from public.activation_codes new_code
+  join lateral regexp_match(coalesce(new_code.note, ''), 'reissue from ([A-Z0-9-]+)') m on true
+  join public.activation_codes old_code on old_code.public_serial = m[1]
+  where new_code.redeemed_by is null
+    and new_code.status = 'new'
+    and old_code.redeemed_by is not null
+)
+update public.activation_codes c
+set
+  status = 'redeemed',
+  redeemed_by = r.owner_user_id,
+  redeemed_at = coalesce(c.redeemed_at, now())
+from relink_candidates r
+where c.id = r.new_code_id;
+
+update public.member_profiles p
+set membership_tier = 'product_member'
+where exists (
+  select 1
+  from public.activation_codes c
+  where c.redeemed_by = p.user_id
+    and c.status = 'redeemed'
+)
+and p.membership_tier <> 'product_member';
 
 create table if not exists public.activation_events (
   id bigserial primary key,
@@ -476,24 +506,35 @@ returns table (
   public_serial text,
   product_sku text,
   redeemed_at timestamptz,
-  code_mask text
+  code_mask text,
+  status text
 )
 language plpgsql
 security definer
 set search_path = public
 as $$
 begin
-  perform public.require_verified_product_member(auth.uid());
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  if not exists (
+    select 1
+    from public.activation_codes c
+    where c.redeemed_by = auth.uid()
+  ) then
+    raise exception 'No bound product found';
+  end if;
 
   return query
   select
     c.public_serial,
     c.product_sku,
     c.redeemed_at,
-    ('****-****-****-' || c.code_last4)::text as code_mask
+    ('****-****-****-' || c.code_last4)::text as code_mask,
+    c.status
   from public.activation_codes c
   where c.redeemed_by = auth.uid()
-    and c.status = 'redeemed'
   order by c.redeemed_at desc nulls last;
 end;
 $$;
@@ -596,6 +637,7 @@ begin
   from public.activation_codes c
   left join auth.users u on u.id = c.redeemed_by
   where c.public_serial ilike v_query || '%'
+     or c.note ilike ('%reissue from ' || v_query || '%')
   order by c.created_at desc
   limit 50;
 end;
@@ -813,6 +855,9 @@ declare
   v_hash text;
   v_last4 text;
   v_serial text;
+  v_new_status text;
+  v_new_redeemed_by uuid;
+  v_new_redeemed_at timestamptz;
   v_url_base text := coalesce(nullif(trim(p_base_url), ''), 'https://www.bee-yuan.com');
   v_new_id uuid;
 begin
@@ -852,6 +897,16 @@ begin
   set status = 'revoked'
   where id = v_old.id;
 
+  if v_old.redeemed_by is not null then
+    v_new_status := 'redeemed';
+    v_new_redeemed_by := v_old.redeemed_by;
+    v_new_redeemed_at := now();
+  else
+    v_new_status := 'new';
+    v_new_redeemed_by := null;
+    v_new_redeemed_at := null;
+  end if;
+
   loop
     v_code := public.generate_activation_code(20);
     v_hash := encode(extensions.digest(v_code, 'sha256'), 'hex');
@@ -865,15 +920,19 @@ begin
         status,
         product_sku,
         note,
-        batch_id
+        batch_id,
+        redeemed_by,
+        redeemed_at
       ) values (
         v_hash,
         v_last4,
         v_serial,
-        'new',
+        v_new_status,
         v_old.product_sku,
         coalesce(v_old.note, '') || ' | reissue from ' || v_old.public_serial,
-        v_old.batch_id
+        v_old.batch_id,
+        v_new_redeemed_by,
+        v_new_redeemed_at
       )
       returning id into v_new_id;
       exit;

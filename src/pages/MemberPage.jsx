@@ -121,6 +121,10 @@ export default function MemberPage() {
           noProductsHint: 'Go to the activation page to bind your product.',
           ownedProductsLoadFailed: 'Unable to load product records right now. Please try again later.',
           activateNow: 'Activate now',
+          productStatus: 'Status',
+          statusRedeemed: 'Redeemed',
+          statusRevoked: 'Revoked',
+          statusNew: 'New',
           productZone: 'Product Member Zone',
         }
       : {
@@ -145,8 +149,19 @@ export default function MemberPage() {
           noProductsHint: '請前往產品啟用頁完成綁定。',
           ownedProductsLoadFailed: '目前無法讀取產品綁定資料，請稍後再試。',
           activateNow: '立即啟用產品',
+          productStatus: '狀態',
+          statusRedeemed: '已啟用',
+          statusRevoked: '已作廢',
+          statusNew: '新建',
           productZone: '產品會員專區',
         };
+
+  const statusLabel = (status) => {
+    if (status === 'redeemed') return text.statusRedeemed;
+    if (status === 'revoked') return text.statusRevoked;
+    if (status === 'new') return text.statusNew;
+    return status || '-';
+  };
 
   if (loading) {
     return <div className="min-h-screen pt-36 px-6 max-w-5xl mx-auto">Loading...</div>;
@@ -318,6 +333,7 @@ export default function MemberPage() {
                   <div>SN: {item.public_serial ?? '-'}</div>
                   <div>{lang === 'en' ? 'SKU' : '型號'}: {item.product_sku || '-'}</div>
                   <div>{lang === 'en' ? 'Code' : '啟用碼'}: {item.code_mask || '****'}</div>
+                  <div>{text.productStatus}: {statusLabel(item.status)}</div>
                   <div>
                     {lang === 'en' ? 'Activated at' : '啟用時間'}:{' '}
                     {item.redeemed_at ? new Date(item.redeemed_at).toLocaleString() : '-'}

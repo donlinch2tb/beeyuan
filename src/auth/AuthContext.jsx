@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.rpc('my_owned_products');
     if (error) {
       const message = String(error.message ?? '');
-      if (message.toLowerCase().includes('verified product member required')) {
+      if (message.toLowerCase().includes('no bound product found')) {
         setOwnedProducts([]);
         setOwnedProductsState('unbound');
         return;
@@ -359,7 +359,7 @@ export function AuthProvider({ children }) {
   const hasGithubIdentity = Boolean(user?.identities?.some((item) => item.provider === 'github'));
   const isAdmin = profile?.role === 'admin';
   const isProductMember = profile?.membership_tier === 'product_member';
-  const isVerifiedProductMember = ownedProducts.length > 0;
+  const isVerifiedProductMember = ownedProducts.some((item) => item.status === 'redeemed');
   const adminSecondFactorRequired = Boolean(user && isAdmin && !hasGithubIdentity);
 
   const value = {
