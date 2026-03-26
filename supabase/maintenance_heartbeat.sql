@@ -579,6 +579,82 @@ $$;
 revoke all on function public.admin_recent_maintenance_actions(int) from public;
 grant execute on function public.admin_recent_maintenance_actions(int) to authenticated;
 
+drop function if exists public.admin_daily_activity(int);
+create or replace function public.admin_daily_activity(p_days int default 7)
+returns table (
+  day date,
+  page_views bigint,
+  admin_page_views bigint,
+  heartbeats bigint,
+  admin_actions bigint,
+  total bigint
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_days int := greatest(3, least(coalesce(p_days, 7), 30));
+begin
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  if not public.is_admin_user(auth.uid()) then
+    raise exception 'Admin only';
+  end if;
+
+  return query
+  with day_range as (
+    select generate_series(
+      (current_date - (v_days - 1)),
+      current_date,
+      interval '1 day'
+    )::date as day
+  ),
+  pv as (
+    select v.viewed_at::date as day, count(*)::bigint as cnt
+    from public.page_view_events v
+    where v.viewed_at >= (current_date - (v_days - 1))
+    group by v.viewed_at::date
+  ),
+  apv as (
+    select v.viewed_at::date as day, count(*)::bigint as cnt
+    from public.admin_page_view_events v
+    where v.viewed_at >= (current_date - (v_days - 1))
+    group by v.viewed_at::date
+  ),
+  hb as (
+    select h.created_at::date as day, count(*)::bigint as cnt
+    from public.system_heartbeat_log h
+    where h.created_at >= (current_date - (v_days - 1))
+    group by h.created_at::date
+  ),
+  ma as (
+    select a.created_at::date as day, count(*)::bigint as cnt
+    from public.admin_maintenance_actions a
+    where a.created_at >= (current_date - (v_days - 1))
+    group by a.created_at::date
+  )
+  select
+    d.day,
+    coalesce(pv.cnt, 0) as page_views,
+    coalesce(apv.cnt, 0) as admin_page_views,
+    coalesce(hb.cnt, 0) as heartbeats,
+    coalesce(ma.cnt, 0) as admin_actions,
+    coalesce(pv.cnt, 0) + coalesce(apv.cnt, 0) + coalesce(hb.cnt, 0) + coalesce(ma.cnt, 0) as total
+  from day_range d
+  left join pv on pv.day = d.day
+  left join apv on apv.day = d.day
+  left join hb on hb.day = d.day
+  left join ma on ma.day = d.day
+  order by d.day asc;
+end;
+$$;
+
+revoke all on function public.admin_daily_activity(int) from public;
+grant execute on function public.admin_daily_activity(int) to authenticated;
+
 -- Bootstrap one heartbeat now so status is visible right away.
 select public.run_system_heartbeat('bootstrap');
 

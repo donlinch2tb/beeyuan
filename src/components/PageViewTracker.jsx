@@ -20,14 +20,21 @@ function hasAnalyticsConsent() {
 export default function PageViewTracker() {
   const location = useLocation();
   const { lang } = useI18n();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const recentSendsRef = useRef(new Map());
 
   useEffect(() => {
     if (!supabase) return;
-    if (typeof window !== 'undefined' && !hasAnalyticsConsent()) return;
 
     const path = location.pathname || '/';
+    const isAdminPath = path.startsWith('/admin');
+    const canTrackPublic = typeof window !== 'undefined' ? hasAnalyticsConsent() : false;
+
+    // Public page tracking respects cookie analytics consent.
+    // Admin page tracking is treated as security/operations audit signal.
+    if (!isAdminPath && !canTrackPublic) return;
+    if (isAdminPath && !isAdmin) return;
+
     const key = `${path}|${lang}|${user?.id ?? 'anon'}`;
     const now = Date.now();
     const lastSentAt = recentSendsRef.current.get(key) ?? 0;
@@ -36,12 +43,23 @@ export default function PageViewTracker() {
     if (now - lastSentAt < 4000) return;
     recentSendsRef.current.set(key, now);
 
-    void supabase.rpc('track_page_view', {
-      p_path: path,
-      p_lang: lang,
-      p_referrer: typeof document !== 'undefined' ? document.referrer || null : null,
-    });
-  }, [location.pathname, lang, user?.id]);
+    void supabase
+      .rpc('track_page_view', {
+        p_path: path,
+        p_lang: lang,
+        p_referrer: typeof document !== 'undefined' ? document.referrer || null : null,
+      })
+      .then(({ data, error }) => {
+        if (error && import.meta.env.DEV) {
+          console.warn('[track_page_view] rpc error', error.message);
+          return;
+        }
+        const first = Array.isArray(data) ? data[0] : data;
+        if (first?.ok === false && import.meta.env.DEV) {
+          console.warn('[track_page_view] not recorded', first?.message || 'unknown');
+        }
+      });
+  }, [location.pathname, lang, user?.id, isAdmin]);
 
   return null;
 }

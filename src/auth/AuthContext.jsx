@@ -343,6 +343,14 @@ export function AuthProvider({ children }) {
     return { data, error };
   };
 
+  const adminDailyActivity = async (days = 7) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_daily_activity', {
+      p_days: Number(days),
+    });
+    return { data, error };
+  };
+
   const runSystemHeartbeat = async (source = 'manual') => {
     if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
     const { data, error } = await supabase.rpc('run_system_heartbeat', { p_source: source });
@@ -454,6 +462,7 @@ export function AuthProvider({ children }) {
     adminTopPageViews,
     adminRecentMaintenanceActions,
     adminRecentCodeActions,
+    adminDailyActivity,
     runSystemHeartbeat,
     linkGithubForAdmin,
     refreshProfile: () => fetchProfile(user),

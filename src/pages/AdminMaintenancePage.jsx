@@ -24,6 +24,7 @@ export default function AdminMaintenancePage() {
     adminTopPageViews,
     adminRecentMaintenanceActions,
     adminRecentCodeActions,
+    adminDailyActivity,
     runSystemHeartbeat,
   } = useAuth();
   const [busy, setBusy] = useState(false);
@@ -33,6 +34,7 @@ export default function AdminMaintenancePage() {
   const [topPages, setTopPages] = useState([]);
   const [recentActions, setRecentActions] = useState([]);
   const [recentCodeActions, setRecentCodeActions] = useState([]);
+  const [dailyActivity, setDailyActivity] = useState([]);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -65,6 +67,8 @@ export default function AdminMaintenancePage() {
           topPagesTitle: 'Top pages (24h)',
           recentActionsTitle: 'Recent maintenance actions',
           recentCodeActionsTitle: 'Recent code generation actions',
+          trendTitle: '7-day activity trend',
+          trendTotal: 'Total',
           noData: 'No data yet',
           backMember: 'Back to member',
           unknown: 'Unknown',
@@ -96,6 +100,8 @@ export default function AdminMaintenancePage() {
           topPagesTitle: '熱門頁面（24h）',
           recentActionsTitle: '最近維運操作',
           recentCodeActionsTitle: '最近產碼操作',
+          trendTitle: '最近 7 天活躍趨勢',
+          trendTotal: '總量',
           noData: '目前無資料',
           backMember: '回會員頁',
           unknown: '未知',
@@ -103,12 +109,13 @@ export default function AdminMaintenancePage() {
 
   const loadStatus = async () => {
     setStatusLoading(true);
-    const [statusResp, metricsResp, topResp, actionResp, codeActionResp] = await Promise.all([
+    const [statusResp, metricsResp, topResp, actionResp, codeActionResp, dailyResp] = await Promise.all([
       adminGetHeartbeatStatus(),
       adminGetMaintenanceMetrics(24),
       adminTopPageViews({ hours: 24, limit: 8 }),
       adminRecentMaintenanceActions(10),
       adminRecentCodeActions(10),
+      adminDailyActivity(7),
     ]);
 
     const { data, error } = statusResp;
@@ -135,6 +142,10 @@ export default function AdminMaintenancePage() {
 
     if (!codeActionResp.error) {
       setRecentCodeActions(Array.isArray(codeActionResp.data) ? codeActionResp.data : []);
+    }
+
+    if (!dailyResp.error) {
+      setDailyActivity(Array.isArray(dailyResp.data) ? dailyResp.data : []);
     }
 
     setStatusLoading(false);
@@ -191,6 +202,7 @@ export default function AdminMaintenancePage() {
   const isEnabled = Boolean(status?.bundle_enabled);
   const pageTrackingEnabled = Boolean(status?.page_tracking_enabled);
   const adminTrackingEnabled = Boolean(status?.admin_tracking_enabled);
+  const maxDailyTotal = Math.max(1, ...dailyActivity.map((row) => Number(row.total || 0)));
 
   return (
     <section className="min-h-screen pt-32 pb-16 px-6">
@@ -302,6 +314,32 @@ export default function AdminMaintenancePage() {
               <p className="text-sm text-secondary">{text.noData}</p>
             )}
           </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-outline-variant/30 p-4 bg-surface-container">
+          <h2 className="font-semibold mb-3">{text.trendTitle}</h2>
+          {dailyActivity.length ? (
+            <div className="space-y-2">
+              {dailyActivity.map((row) => {
+                const total = Number(row.total || 0);
+                const width = Math.max(2, Math.round((total / maxDailyTotal) * 100));
+                const day = String(row.day || '').slice(5);
+                return (
+                  <div key={row.day} className="grid grid-cols-[56px_1fr_120px] gap-2 items-center text-xs">
+                    <div className="text-secondary">{day}</div>
+                    <div className="h-2.5 rounded bg-surface-container-high overflow-hidden">
+                      <div className="h-full bg-primary" style={{ width: `${width}%` }} />
+                    </div>
+                    <div className="text-secondary">
+                      {text.trendTotal}: {total} (pv {row.page_views}, admin {row.admin_page_views}, hb {row.heartbeats})
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-secondary">{text.noData}</p>
+          )}
         </div>
 
         <div className="mt-4 rounded-xl border border-outline-variant/30 p-4 bg-surface-container">
