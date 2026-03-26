@@ -6,6 +6,10 @@ import SolutionsPage from './pages/SolutionsPage';
 import ESGPage from './pages/ESGPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import LoginPage from './pages/LoginPage';
+import MemberPage from './pages/MemberPage';
+import ActivatePage from './pages/ActivatePage';
+import AdminCodesPage from './pages/AdminCodesPage';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
 
@@ -22,6 +26,10 @@ function App() {
             <Route path="/esg" element={<ESGPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/member" element={<MemberPage />} />
+            <Route path="/activate" element={<ActivatePage />} />
+            <Route path="/admin/codes" element={<AdminCodesPage />} />
           </Routes>
         </main>
         <Footer />

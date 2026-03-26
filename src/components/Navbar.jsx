@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useI18n } from '../i18n/useI18n';
+import { useAuth } from '../auth/useAuth';
 
 export default function Navbar() {
   const { t, lang, toggleLang } = useI18n();
+  const { user, profile, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -22,6 +26,24 @@ export default function Navbar() {
   ];
 
   const isHome = location.pathname === '/';
+  const memberLabel = profile?.display_name || user?.email?.split('@')[0] || 'Member';
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      const { error } = await signOut();
+      if (!error) {
+        navigate('/');
+      } else {
+        console.warn('logout failed:', error.message);
+      }
+    } catch (error) {
+      console.warn('logout failed:', error);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <nav
@@ -56,6 +78,20 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          {user ? (
+            <Link
+              to="/member"
+              className={`transition-colors font-label text-sm font-semibold ${
+                location.pathname === '/member'
+                  ? 'text-primary'
+                  : scrolled || !isHome
+                  ? 'text-secondary hover:text-primary'
+                  : 'text-white/80 hover:text-white'
+              }`}
+            >
+              {lang === 'en' ? `Member: ${memberLabel}` : `會員：${memberLabel}`}
+            </Link>
+          ) : null}
         </div>
 
         {/* Right Side */}
@@ -79,6 +115,21 @@ export default function Navbar() {
           >
             {t('nav.contact')}
           </Link>
+
+          {user ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className={`hidden sm:inline-flex px-3 py-2 rounded-xl font-label text-sm font-semibold transition-colors ${
+                scrolled || !isHome
+                  ? 'bg-surface-container-high text-on-surface hover:bg-surface-container-highest'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              } disabled:opacity-50`}
+            >
+              {lang === 'en' ? 'Logout' : '登出'}
+            </button>
+          ) : null}
 
           {/* Mobile Menu Button */}
           <button
@@ -116,6 +167,28 @@ export default function Navbar() {
           >
             {t('nav.contact')}
           </Link>
+          {user ? (
+            <>
+              <Link
+                to="/member"
+                onClick={() => setMobileOpen(false)}
+                className="block py-3 transition-colors font-label text-sm font-semibold border-b border-outline-variant/5 text-secondary hover:text-primary"
+              >
+                {lang === 'en' ? `Member: ${memberLabel}` : `會員：${memberLabel}`}
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  void handleLogout();
+                  setMobileOpen(false);
+                }}
+                disabled={loggingOut}
+                className="inline-flex mt-4 bg-surface-container-high text-on-surface px-5 py-2 rounded-xl font-label text-sm font-semibold"
+              >
+                {lang === 'en' ? 'Logout' : '登出'}
+              </button>
+            </>
+          ) : null}
         </div>
       )}
     </nav>
