@@ -25,7 +25,11 @@ create table if not exists public.system_heartbeat_state (
   heartbeat_enabled boolean not null default true,
   page_tracking_enabled boolean not null default true,
   admin_tracking_enabled boolean not null default true,
-  heartbeat_schedule text not null default '0 */6 * * *'
+  news_ingest_enabled boolean not null default false,
+  heartbeat_schedule text not null default '0 */6 * * *',
+  news_schedule text not null default '15 */12 * * *',
+  news_api_provider text not null default 'gnews',
+  news_api_key text
 );
 
 alter table public.system_heartbeat_state
@@ -38,7 +42,19 @@ alter table public.system_heartbeat_state
 add column if not exists admin_tracking_enabled boolean not null default true;
 
 alter table public.system_heartbeat_state
+add column if not exists news_ingest_enabled boolean not null default false;
+
+alter table public.system_heartbeat_state
 add column if not exists heartbeat_schedule text not null default '0 */6 * * *';
+
+alter table public.system_heartbeat_state
+add column if not exists news_schedule text not null default '15 */12 * * *';
+
+alter table public.system_heartbeat_state
+add column if not exists news_api_provider text not null default 'gnews';
+
+alter table public.system_heartbeat_state
+add column if not exists news_api_key text;
 
 insert into public.system_heartbeat_state (id, last_run_at, last_source, total_runs)
 values (1, now(), 'bootstrap', 0)
@@ -49,8 +65,42 @@ set
   heartbeat_enabled = coalesce(heartbeat_enabled, true),
   page_tracking_enabled = coalesce(page_tracking_enabled, true),
   admin_tracking_enabled = coalesce(admin_tracking_enabled, true),
-  heartbeat_schedule = coalesce(nullif(heartbeat_schedule, ''), '0 */6 * * *')
+  news_ingest_enabled = coalesce(news_ingest_enabled, false),
+  heartbeat_schedule = coalesce(nullif(heartbeat_schedule, ''), '0 */6 * * *'),
+  news_schedule = coalesce(nullif(news_schedule, ''), '15 */12 * * *'),
+  news_api_provider = coalesce(nullif(news_api_provider, ''), 'gnews')
 where id = 1;
+
+create table if not exists public.news_articles (
+  id bigserial primary key,
+  keyword text not null,
+  title text not null,
+  url text not null,
+  source_name text,
+  published_at timestamptz,
+  description text,
+  raw jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  unique (url)
+);
+
+create index if not exists idx_news_articles_created_at
+on public.news_articles (created_at desc);
+
+create index if not exists idx_news_articles_published_at
+on public.news_articles (published_at desc);
+
+create table if not exists public.news_ingest_runs (
+  id bigserial primary key,
+  source text not null default 'manual',
+  ok boolean not null default false,
+  inserted_count int not null default 0,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_news_ingest_runs_created_at
+on public.news_ingest_runs (created_at desc);
 
 create table if not exists public.page_view_events (
   id bigserial primary key,
@@ -281,12 +331,24 @@ begin
     delete from public.admin_maintenance_actions
     where created_at < now() - make_interval(days => v_retention_days)
     returning 1
+  ),
+  deleted_news_articles as (
+    delete from public.news_articles
+    where created_at < now() - make_interval(days => v_retention_days)
+    returning 1
+  ),
+  deleted_news_runs as (
+    delete from public.news_ingest_runs
+    where created_at < now() - make_interval(days => v_retention_days)
+    returning 1
   )
   select
     (select count(*) from deleted_heartbeat)
     + (select count(*) from deleted_page)
     + (select count(*) from deleted_admin_page)
     + (select count(*) from deleted_admin_actions)
+    + (select count(*) from deleted_news_articles)
+    + (select count(*) from deleted_news_runs)
   into v_deleted;
 
   return v_deleted;
@@ -306,7 +368,9 @@ select
   s.heartbeat_enabled,
   s.page_tracking_enabled,
   s.admin_tracking_enabled,
+  s.news_ingest_enabled,
   s.heartbeat_schedule,
+  s.news_schedule,
   l.member_profiles_count,
   l.activation_codes_count,
   l.redeemed_codes_count,
@@ -328,6 +392,7 @@ returns table (
   schedule text,
   page_tracking_enabled boolean,
   admin_tracking_enabled boolean,
+  news_ingest_enabled boolean,
   bundle_enabled boolean,
   last_run_at timestamptz,
   last_source text,
@@ -353,7 +418,8 @@ begin
     s.heartbeat_schedule as schedule,
     s.page_tracking_enabled,
     s.admin_tracking_enabled,
-    (s.heartbeat_enabled and s.page_tracking_enabled and s.admin_tracking_enabled) as bundle_enabled,
+    s.news_ingest_enabled,
+    (s.heartbeat_enabled and s.page_tracking_enabled and s.admin_tracking_enabled and s.news_ingest_enabled) as bundle_enabled,
     s.last_run_at,
     s.last_source,
     s.total_runs,
@@ -451,7 +517,8 @@ begin
   set
     heartbeat_enabled = v_target_enabled,
     page_tracking_enabled = v_target_enabled,
-    admin_tracking_enabled = v_target_enabled
+    admin_tracking_enabled = v_target_enabled,
+    news_ingest_enabled = v_target_enabled
   where id = 1;
 
   insert into public.admin_maintenance_actions (acted_by, action_type, detail)
@@ -477,7 +544,9 @@ returns table (
   unique_pages bigint,
   admin_page_views bigint,
   admin_unique_users bigint,
-  admin_actions bigint
+  admin_actions bigint,
+  news_articles bigint,
+  news_ingest_runs bigint
 )
 language plpgsql
 security definer
@@ -501,7 +570,9 @@ begin
     (select count(distinct v.page_path) from public.page_view_events v where v.viewed_at > now() - make_interval(hours => v_hours)),
     (select count(*) from public.admin_page_view_events v where v.viewed_at > now() - make_interval(hours => v_hours)),
     (select count(distinct v.viewer_user_id) from public.admin_page_view_events v where v.viewed_at > now() - make_interval(hours => v_hours)),
-    (select count(*) from public.admin_maintenance_actions a where a.created_at > now() - make_interval(hours => v_hours));
+    (select count(*) from public.admin_maintenance_actions a where a.created_at > now() - make_interval(hours => v_hours)),
+    (select count(*) from public.news_articles n where n.created_at > now() - make_interval(hours => v_hours)),
+    (select count(*) from public.news_ingest_runs r where r.created_at > now() - make_interval(hours => v_hours));
 end;
 $$;
 
@@ -579,6 +650,185 @@ $$;
 revoke all on function public.admin_recent_maintenance_actions(int) from public;
 grant execute on function public.admin_recent_maintenance_actions(int) to authenticated;
 
+drop function if exists public.admin_ingest_news_payload(text, jsonb);
+create or replace function public.admin_ingest_news_payload(
+  p_source text default 'manual',
+  p_articles jsonb default '[]'::jsonb
+)
+returns table (
+  ok boolean,
+  message text,
+  inserted_count int
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_source text := coalesce(nullif(trim(p_source), ''), 'manual');
+  v_inserted int := 0;
+  v_item jsonb;
+  v_keyword text;
+  v_role text := coalesce(auth.role(), '');
+begin
+  if not (
+    v_role = 'service_role'
+    or (v_uid is not null and public.is_admin_user(v_uid))
+  ) then
+    return query select false, 'Admin only', 0;
+    return;
+  end if;
+
+  for v_item in select value from jsonb_array_elements(coalesce(p_articles, '[]'::jsonb))
+  loop
+    v_keyword := case
+      when lower(coalesce(v_item->>'title', '')) like '%虎頭蜂%' then '虎頭蜂'
+      when lower(coalesce(v_item->>'title', '')) like '%hornet%' then 'hornet'
+      when lower(coalesce(v_item->>'title', '')) like '%vespa%' then 'vespa'
+      else 'hornet'
+    end;
+
+    insert into public.news_articles (
+      keyword,
+      title,
+      url,
+      source_name,
+      published_at,
+      description,
+      raw
+    )
+    values (
+      v_keyword,
+      coalesce(nullif(v_item->>'title', ''), 'Untitled'),
+      coalesce(nullif(v_item->>'url', ''), md5(v_item::text)),
+      nullif(v_item#>>'{source,name}', ''),
+      nullif(v_item->>'publishedAt', '')::timestamptz,
+      nullif(v_item->>'description', ''),
+      v_item
+    )
+    on conflict (url) do nothing;
+
+    if found then
+      v_inserted := v_inserted + 1;
+    end if;
+  end loop;
+
+  insert into public.news_ingest_runs (source, ok, inserted_count, message)
+  values (v_source, true, v_inserted, 'OK');
+
+  if v_uid is not null and public.is_admin_user(v_uid) then
+    if exists (
+      select 1
+      from public.system_heartbeat_state s
+      where s.id = 1 and s.admin_tracking_enabled = true
+    ) then
+      insert into public.admin_maintenance_actions (acted_by, action_type, detail)
+      values (v_uid, 'news_ingest', v_source || ' inserted=' || v_inserted::text);
+    end if;
+  end if;
+
+  return query select true, 'News ingest payload applied', v_inserted;
+end;
+$$;
+
+revoke all on function public.admin_ingest_news_payload(text, jsonb) from public;
+grant execute on function public.admin_ingest_news_payload(text, jsonb) to authenticated;
+grant execute on function public.admin_ingest_news_payload(text, jsonb) to service_role;
+
+drop function if exists public.run_news_ingest(text);
+create or replace function public.run_news_ingest(p_source text default 'manual')
+returns table (
+  ok boolean,
+  message text,
+  inserted_count int
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select
+    false as ok,
+    'Use edge function "news-ingest" (database HTTP extension is not used).'::text as message,
+    0 as inserted_count;
+$$;
+
+revoke all on function public.run_news_ingest(text) from public;
+grant execute on function public.run_news_ingest(text) to authenticated;
+
+drop function if exists public.admin_set_news_api_key(text);
+create or replace function public.admin_set_news_api_key(p_api_key text)
+returns table (
+  ok boolean,
+  message text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_key text := trim(coalesce(p_api_key, ''));
+begin
+  if v_uid is null then
+    return query select false, 'Not authenticated';
+    return;
+  end if;
+
+  if not public.is_admin_user(v_uid) then
+    return query select false, 'Admin only';
+    return;
+  end if;
+
+  update public.system_heartbeat_state
+  set news_api_key = nullif(v_key, '')
+  where id = 1;
+
+  insert into public.admin_maintenance_actions (acted_by, action_type, detail)
+  values (v_uid, 'set_news_api_key', case when v_key = '' then 'cleared' else 'updated' end);
+
+  return query select true, 'News API key saved';
+end;
+$$;
+
+revoke all on function public.admin_set_news_api_key(text) from public;
+grant execute on function public.admin_set_news_api_key(text) to authenticated;
+
+drop function if exists public.admin_recent_news_runs(int);
+create or replace function public.admin_recent_news_runs(p_limit int default 20)
+returns table (
+  created_at timestamptz,
+  source text,
+  ok boolean,
+  inserted_count int,
+  message text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_limit int := greatest(1, least(coalesce(p_limit, 20), 200));
+begin
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  if not public.is_admin_user(auth.uid()) then
+    raise exception 'Admin only';
+  end if;
+
+  return query
+  select r.created_at, r.source, r.ok, r.inserted_count, r.message
+  from public.news_ingest_runs r
+  order by r.created_at desc
+  limit v_limit;
+end;
+$$;
+
+revoke all on function public.admin_recent_news_runs(int) from public;
+grant execute on function public.admin_recent_news_runs(int) to authenticated;
+
 drop function if exists public.admin_daily_activity(int);
 create or replace function public.admin_daily_activity(p_days int default 7)
 returns table (
@@ -587,6 +837,7 @@ returns table (
   admin_page_views bigint,
   heartbeats bigint,
   admin_actions bigint,
+  news_articles bigint,
   total bigint
 )
 language plpgsql
@@ -635,6 +886,12 @@ begin
     from public.admin_maintenance_actions a
     where a.created_at >= (current_date - (v_days - 1))
     group by a.created_at::date
+  ),
+  na as (
+    select n.created_at::date as day, count(*)::bigint as cnt
+    from public.news_articles n
+    where n.created_at >= (current_date - (v_days - 1))
+    group by n.created_at::date
   )
   select
     d.day,
@@ -642,18 +899,23 @@ begin
     coalesce(apv.cnt, 0) as admin_page_views,
     coalesce(hb.cnt, 0) as heartbeats,
     coalesce(ma.cnt, 0) as admin_actions,
-    coalesce(pv.cnt, 0) + coalesce(apv.cnt, 0) + coalesce(hb.cnt, 0) + coalesce(ma.cnt, 0) as total
+    coalesce(na.cnt, 0) as news_articles,
+    coalesce(pv.cnt, 0) + coalesce(apv.cnt, 0) + coalesce(hb.cnt, 0) + coalesce(ma.cnt, 0) + coalesce(na.cnt, 0) as total
   from day_range d
   left join pv on pv.day = d.day
   left join apv on apv.day = d.day
   left join hb on hb.day = d.day
   left join ma on ma.day = d.day
+  left join na on na.day = d.day
   order by d.day asc;
 end;
 $$;
 
 revoke all on function public.admin_daily_activity(int) from public;
 grant execute on function public.admin_daily_activity(int) to authenticated;
+
+-- Ensure pg_net is enabled for HTTP calls from SQL.
+create extension if not exists pg_net with schema extensions;
 
 -- Bootstrap one heartbeat now so status is visible right away.
 select public.run_system_heartbeat('bootstrap');
@@ -662,7 +924,10 @@ select public.run_system_heartbeat('bootstrap');
 do $$
 declare
   v_job_id bigint;
+  v_supabase_url text;
+  v_service_role_key text;
 begin
+  -- Heartbeat every 6 hours
   select jobid into v_job_id
   from cron.job
   where jobname = 'beeyuan-heartbeat-every-6h';
@@ -677,6 +942,7 @@ begin
     $cmd$select public.run_system_heartbeat('pg_cron');$cmd$
   );
 
+  -- Cleanup daily
   select jobid into v_job_id
   from cron.job
   where jobname = 'beeyuan-heartbeat-cleanup-daily';
@@ -690,4 +956,48 @@ begin
     '20 3 * * *',
     $cmd$select public.cleanup_system_heartbeat_log(60);$cmd$
   );
+
+  -- News ingest every 12 hours via Edge Function + pg_net
+  select jobid into v_job_id
+  from cron.job
+  where jobname = 'beeyuan-news-ingest-every-12h';
+
+  if v_job_id is not null then
+    perform cron.unschedule(v_job_id);
+  end if;
+
+  -- Read Supabase project URL from current_setting (available in Supabase hosted PG)
+  v_supabase_url := coalesce(
+    current_setting('app.settings.supabase_url', true),
+    current_setting('supabase.url', true),
+    'https://flpjzeelpqccfbhqwtfo.supabase.co'
+  );
+  v_service_role_key := coalesce(
+    current_setting('app.settings.service_role_key', true),
+    current_setting('supabase.service_role_key', true),
+    ''
+  );
+
+  if v_service_role_key <> '' then
+    perform cron.schedule(
+      'beeyuan-news-ingest-every-12h',
+      '30 0,12 * * *',
+      format(
+        $cmd$
+        select extensions.http_post(
+          url := %L,
+          body := '{"source":"pg_cron"}'::jsonb,
+          headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'Authorization', 'Bearer ' || %L
+          )
+        );
+        $cmd$,
+        v_supabase_url || '/functions/v1/news-ingest',
+        v_service_role_key
+      )
+    );
+  else
+    raise notice 'service_role_key not found in current_setting, skipping news-ingest cron setup. Run the cron SQL manually with the key.';
+  end if;
 end $$;

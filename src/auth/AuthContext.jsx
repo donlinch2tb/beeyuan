@@ -351,6 +351,84 @@ export function AuthProvider({ children }) {
     return { data, error };
   };
 
+  const runNewsIngest = async (source = 'manual') => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const invokeWithToken = async (token) => {
+      const { data, error } = await supabase.functions.invoke('news-ingest', {
+        body: {
+          source,
+          access_token: token,
+        },
+      });
+
+      if (!error) return { data, error: null, status: 200 };
+
+      let detail = error.message || 'Edge function failed';
+      let status = null;
+      try {
+        const context = error.context;
+        if (context) {
+          status = context.status;
+          const payload = await context.json();
+          if (payload?.message) {
+            detail = String(payload.message);
+          }
+        }
+      } catch {
+        // keep default error detail
+      }
+      return { data: null, error: new Error(detail), status };
+    };
+
+    const {
+      data: { session: currentSession },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) return { data: null, error: sessionError };
+    if (!currentSession?.access_token) {
+      return { data: null, error: new Error('Auth session missing. Please sign in again.') };
+    }
+
+    let result = await invokeWithToken(currentSession.access_token);
+    if (!result.error) return { data: result.data, error: null };
+
+    const shouldRetry =
+      result.status === 401 || String(result.error.message || '').toLowerCase().includes('invalid jwt');
+
+    if (!shouldRetry) {
+      return { data: null, error: result.error };
+    }
+
+    const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+    if (refreshError || !refreshed?.session?.access_token) {
+      return {
+        data: null,
+        error: new Error('Session expired. Please sign out and sign in again.'),
+      };
+    }
+
+    result = await invokeWithToken(refreshed.session.access_token);
+    if (result.error) return { data: null, error: result.error };
+    return { data: result.data, error: null };
+  };
+
+  const adminSetNewsApiKey = async (apiKey) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_set_news_api_key', {
+      p_api_key: String(apiKey ?? ''),
+    });
+    return { data, error };
+  };
+
+  const adminRecentNewsRuns = async (limit = 20) => {
+    if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
+    const { data, error } = await supabase.rpc('admin_recent_news_runs', {
+      p_limit: Number(limit),
+    });
+    return { data, error };
+  };
+
   const runSystemHeartbeat = async (source = 'manual') => {
     if (!supabase) return { data: null, error: new Error('Supabase is not configured') };
     const { data, error } = await supabase.rpc('run_system_heartbeat', { p_source: source });
@@ -463,6 +541,9 @@ export function AuthProvider({ children }) {
     adminRecentMaintenanceActions,
     adminRecentCodeActions,
     adminDailyActivity,
+    runNewsIngest,
+    adminSetNewsApiKey,
+    adminRecentNewsRuns,
     runSystemHeartbeat,
     linkGithubForAdmin,
     refreshProfile: () => fetchProfile(user),

@@ -11,6 +11,16 @@ function toLocaleTime(value) {
   return date.toLocaleString();
 }
 
+const NEWS_API_KEY_LOCAL_STORAGE_KEY = 'beeyuan_news_api_key_input_v1';
+
+function readNewsApiKeyInput() {
+  try {
+    return localStorage.getItem(NEWS_API_KEY_LOCAL_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
 export default function AdminMaintenancePage() {
   const { lang } = useI18n();
   const {
@@ -25,6 +35,9 @@ export default function AdminMaintenancePage() {
     adminRecentMaintenanceActions,
     adminRecentCodeActions,
     adminDailyActivity,
+    runNewsIngest,
+    adminSetNewsApiKey,
+    adminRecentNewsRuns,
     runSystemHeartbeat,
   } = useAuth();
   const [busy, setBusy] = useState(false);
@@ -35,6 +48,8 @@ export default function AdminMaintenancePage() {
   const [recentActions, setRecentActions] = useState([]);
   const [recentCodeActions, setRecentCodeActions] = useState([]);
   const [dailyActivity, setDailyActivity] = useState([]);
+  const [recentNewsRuns, setRecentNewsRuns] = useState([]);
+  const [newsApiKeyInput, setNewsApiKeyInput] = useState(() => readNewsApiKeyInput());
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -47,6 +62,7 @@ export default function AdminMaintenancePage() {
           tracking: 'Tracking switch',
           pageTracking: 'Public page tracking',
           adminTracking: 'Admin page/action tracking',
+          newsIngest: 'News ingest automation',
           enabled: 'Enabled',
           paused: 'Paused',
           schedule: 'Schedule',
@@ -64,11 +80,18 @@ export default function AdminMaintenancePage() {
           metricAdminPageViews: 'Admin page views',
           metricAdminUsers: 'Admin users',
           metricAdminActions: 'Admin actions',
+          metricNewsArticles: 'News articles',
+          metricNewsRuns: 'News ingest runs',
           topPagesTitle: 'Top pages (24h)',
           recentActionsTitle: 'Recent maintenance actions',
           recentCodeActionsTitle: 'Recent code generation actions',
           trendTitle: '7-day activity trend',
           trendTotal: 'Total',
+          saveNewsKey: 'Save News API key',
+          newsKeyLabel: 'SerpApi Key',
+          newsKeyHint: 'This field is cached in your current browser.',
+          runNewsNow: 'Run news ingest now',
+          recentNewsRunsTitle: 'Recent news ingest runs',
           noData: 'No data yet',
           backMember: 'Back to member',
           unknown: 'Unknown',
@@ -80,6 +103,7 @@ export default function AdminMaintenancePage() {
           tracking: '追蹤開關',
           pageTracking: '前台頁面追蹤',
           adminTracking: 'Admin 頁面/操作追蹤',
+          newsIngest: '新聞擷取自動化',
           enabled: '已啟用',
           paused: '已暫停',
           schedule: '排程',
@@ -97,11 +121,18 @@ export default function AdminMaintenancePage() {
           metricAdminPageViews: 'Admin 頁面瀏覽量',
           metricAdminUsers: 'Admin 使用者數',
           metricAdminActions: 'Admin 維運操作數',
+          metricNewsArticles: '新聞寫入數',
+          metricNewsRuns: '新聞擷取執行數',
           topPagesTitle: '熱門頁面（24h）',
           recentActionsTitle: '最近維運操作',
           recentCodeActionsTitle: '最近產碼操作',
           trendTitle: '最近 7 天活躍趨勢',
           trendTotal: '總量',
+          saveNewsKey: '儲存新聞 API Key',
+          newsKeyLabel: 'SerpApi Key',
+          newsKeyHint: '此欄位會暫存在你目前瀏覽器。',
+          runNewsNow: '立即抓取新聞',
+          recentNewsRunsTitle: '最近新聞擷取執行紀錄',
           noData: '目前無資料',
           backMember: '回會員頁',
           unknown: '未知',
@@ -109,13 +140,14 @@ export default function AdminMaintenancePage() {
 
   const loadStatus = async () => {
     setStatusLoading(true);
-    const [statusResp, metricsResp, topResp, actionResp, codeActionResp, dailyResp] = await Promise.all([
+    const [statusResp, metricsResp, topResp, actionResp, codeActionResp, dailyResp, newsRunsResp] = await Promise.all([
       adminGetHeartbeatStatus(),
       adminGetMaintenanceMetrics(24),
       adminTopPageViews({ hours: 24, limit: 8 }),
       adminRecentMaintenanceActions(10),
       adminRecentCodeActions(10),
       adminDailyActivity(7),
+      adminRecentNewsRuns(10),
     ]);
 
     const { data, error } = statusResp;
@@ -148,6 +180,10 @@ export default function AdminMaintenancePage() {
       setDailyActivity(Array.isArray(dailyResp.data) ? dailyResp.data : []);
     }
 
+    if (!newsRunsResp.error) {
+      setRecentNewsRuns(Array.isArray(newsRunsResp.data) ? newsRunsResp.data : []);
+    }
+
     setStatusLoading(false);
   };
 
@@ -157,6 +193,14 @@ export default function AdminMaintenancePage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, user, isAdmin, adminSecondFactorRequired]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(NEWS_API_KEY_LOCAL_STORAGE_KEY, newsApiKeyInput);
+    } catch {
+      // no-op
+    }
+  }, [newsApiKeyInput]);
 
   if (loading) return <div className="min-h-screen pt-36 px-6 max-w-5xl mx-auto">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
@@ -199,9 +243,51 @@ export default function AdminMaintenancePage() {
     setBusy(false);
   };
 
+  const saveNewsKey = async () => {
+    setBusy(true);
+    setMessage('');
+    setErrorMessage('');
+    const { data, error } = await adminSetNewsApiKey(newsApiKeyInput);
+    if (error) {
+      setErrorMessage(error.message);
+      setBusy(false);
+      return;
+    }
+    const first = Array.isArray(data) ? data[0] : data;
+    if (first?.ok === false) {
+      setErrorMessage(first?.message || 'Operation failed');
+      setBusy(false);
+      return;
+    }
+    setMessage(first?.message || 'Saved');
+    setBusy(false);
+  };
+
+  const runNewsNow = async () => {
+    setBusy(true);
+    setMessage('');
+    setErrorMessage('');
+    const { data, error } = await runNewsIngest('admin-manual');
+    if (error) {
+      setErrorMessage(error.message);
+      setBusy(false);
+      return;
+    }
+    const first = Array.isArray(data) ? data[0] : data;
+    if (first?.ok === false) {
+      setErrorMessage(first?.message || 'News ingest failed');
+      setBusy(false);
+      return;
+    }
+    setMessage(`${first?.message || 'Done'} (+${first?.inserted_count ?? 0})`);
+    await loadStatus();
+    setBusy(false);
+  };
+
   const isEnabled = Boolean(status?.bundle_enabled);
   const pageTrackingEnabled = Boolean(status?.page_tracking_enabled);
   const adminTrackingEnabled = Boolean(status?.admin_tracking_enabled);
+  const newsIngestEnabled = Boolean(status?.news_ingest_enabled);
   const maxDailyTotal = Math.max(1, ...dailyActivity.map((row) => Number(row.total || 0)));
 
   return (
@@ -230,6 +316,10 @@ export default function AdminMaintenancePage() {
                 /{' '}
                 <span className={adminTrackingEnabled ? 'text-primary' : 'text-error'}>
                   {text.adminTracking} {adminTrackingEnabled ? text.enabled : text.paused}
+                </span>
+                {' / '}
+                <span className={newsIngestEnabled ? 'text-primary' : 'text-error'}>
+                  {text.newsIngest} {newsIngestEnabled ? text.enabled : text.paused}
                 </span>
               </div>
               <div>
@@ -284,6 +374,36 @@ export default function AdminMaintenancePage() {
           >
             {text.manualRun}
           </button>
+          <button
+            type="button"
+            onClick={runNewsNow}
+            disabled={busy}
+            className="bg-tertiary text-on-tertiary px-4 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
+          >
+            {text.runNewsNow}
+          </button>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-outline-variant/30 p-4 bg-surface-container">
+          <label className="block text-sm font-semibold text-secondary">{text.newsKeyLabel}</label>
+          <p className="mt-1 text-xs text-secondary">{text.newsKeyHint}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <input
+              type="password"
+              value={newsApiKeyInput}
+              onChange={(e) => setNewsApiKeyInput(e.target.value)}
+              className="flex-1 min-w-[260px] rounded-xl border border-outline-variant/40 bg-white px-4 py-2.5"
+              placeholder="SerpApi private key"
+            />
+            <button
+              type="button"
+              onClick={saveNewsKey}
+              disabled={busy}
+              className="bg-surface-container-high px-4 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
+            >
+              {text.saveNewsKey}
+            </button>
+          </div>
         </div>
 
         {message ? <p className="mt-4 text-sm text-primary">{message}</p> : null}
@@ -298,6 +418,8 @@ export default function AdminMaintenancePage() {
               <div>{text.metricAdminPageViews}: {metrics?.admin_page_views ?? 0}</div>
               <div>{text.metricAdminUsers}: {metrics?.admin_unique_users ?? 0}</div>
               <div>{text.metricAdminActions}: {metrics?.admin_actions ?? 0}</div>
+              <div>{text.metricNewsArticles}: {metrics?.news_articles ?? 0}</div>
+              <div>{text.metricNewsRuns}: {metrics?.news_ingest_runs ?? 0}</div>
             </div>
           </div>
           <div className="rounded-xl border border-outline-variant/30 p-4 bg-surface-container">
@@ -331,7 +453,7 @@ export default function AdminMaintenancePage() {
                       <div className="h-full bg-primary" style={{ width: `${width}%` }} />
                     </div>
                     <div className="text-secondary">
-                      {text.trendTotal}: {total} (pv {row.page_views}, admin {row.admin_page_views}, hb {row.heartbeats})
+                      {text.trendTotal}: {total} (pv {row.page_views}, admin {row.admin_page_views}, hb {row.heartbeats}, news {row.news_articles})
                     </div>
                   </div>
                 );
@@ -349,6 +471,21 @@ export default function AdminMaintenancePage() {
               {recentActions.map((row) => (
                 <div key={`${row.created_at}-${row.action_type}`}>
                   {toLocaleTime(row.created_at)} - {row.action_type} ({row.detail || '-'})
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-secondary">{text.noData}</p>
+          )}
+        </div>
+
+        <div className="mt-4 rounded-xl border border-outline-variant/30 p-4 bg-surface-container">
+          <h2 className="font-semibold mb-3">{text.recentNewsRunsTitle}</h2>
+          {recentNewsRuns.length ? (
+            <div className="space-y-1 text-sm">
+              {recentNewsRuns.map((row) => (
+                <div key={`${row.created_at}-${row.source}`}>
+                  {toLocaleTime(row.created_at)} - {row.source} - {row.ok ? 'ok' : 'fail'} (+{row.inserted_count}) {row.message || ''}
                 </div>
               ))}
             </div>

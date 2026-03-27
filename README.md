@@ -82,6 +82,24 @@ npm install
 npm run dev
 ```
 
+## 5.1) Deploy news ingest edge function
+
+`/admin/maintenance` 的「立即抓取新聞」會呼叫 Supabase Edge Function，請先部署：
+
+```bash
+supabase functions deploy news-ingest
+```
+
+若你是用 Supabase Dashboard 部署，請把此檔案內容上傳：
+
+- [`supabase/functions/news-ingest/index.ts`](./supabase/functions/news-ingest/index.ts)
+
+部署後若前端曾出現 `404 /rpc/admin_recent_news_runs`，請在 SQL Editor 執行：
+
+```sql
+select pg_notify('pgrst', 'reload schema');
+```
+
 ## 6) 驗證 Heartbeat 自動化（中文）
 
 執行 `supabase/maintenance_heartbeat.sql` 後，請到 Supabase SQL Editor 驗證：
@@ -119,6 +137,7 @@ select * from public.run_system_heartbeat('manual-check');
 - 一鍵啟用整套追蹤（heartbeat + 前台頁面追蹤 + admin 頁面/操作追蹤）
 - 一鍵暫停整套追蹤
 - 立即手動執行一次 heartbeat
+- 設定 GNews API Key 並手動/排程抓取「虎頭蜂相關新聞」
 - 查看最後執行時間、來源、累積次數
 - 觀察最近 24h 活躍數據（頁面瀏覽量、熱門頁面、admin 操作）
 - 查看最近產碼操作紀錄（誰在何時產生了哪一批）
