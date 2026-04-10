@@ -1,0 +1,23 @@
+# Render 靜態網站重定向配置
+
+# 防止常見的攻擊路徑
+/admin/* /404.html 404
+/wp-admin/* /404.html 404
+/wp-login.php /404.html 404
+/wp-content/* /404.html 404
+/administrator/* /404.html 404
+/phpmyadmin/* /404.html 404
+/phpMyAdmin/* /404.html 404
+/.env /404.html 404
+/.git/* /404.html 404
+/config/* /404.html 404
+/api/* /404.html 404
+/admin /404.html 404
+/login /404.html 404
+/dashboard /404.html 404
+
+# 強制 HTTPS 重定向（如果需要）
+http://sunnyyummy.netlify.app/* https://sunnyyummy.netlify.app/:splat 301!
+
+# SPA 路由處理（如果需要）
+/*    /index.html   200

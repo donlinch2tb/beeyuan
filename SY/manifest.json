@@ -1,0 +1,27 @@
+{
+    "name": "SunnyYummy 週邊商品",
+    "short_name": "SunnyYummy",
+    "description": "探索 SunnyYummy 官方週邊商品！最新限定款 T-shirt、鑰匙圈、貼圖等獨家商品。",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#667eea",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "images/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "images/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable any"
+        }
+    ],
+    "categories": ["shopping", "entertainment"],
+    "lang": "zh-TW",
+    "dir": "ltr"
+}

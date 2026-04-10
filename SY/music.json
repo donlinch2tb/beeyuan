@@ -1,0 +1,46 @@
+{
+    "artists": [
+        {
+            "id": 1,
+            "name": "林莉C亞米",
+            "link": "https://music.youtube.com/channel/UCUqbkrTFAKT_HNcDI59vR1A",
+            "image": "https://lh3.googleusercontent.com/7_t7p62NuPUfzABbSjfxVp0hmAr0T-TgLiiVb4BDK4nuVxg1dpuOHlKPZuZNwZ549Z6L_kOoYvolJw=w1920-h800-p-l90-rj"
+        },
+        {
+            "id": 2,
+            "name": "雪球軟糖",
+            "link": "https://music.youtube.com/channel/UCl8Eh3swLZGNe8wjkH3I6Yw",
+            "image": "https://lh3.googleusercontent.com/K_aE9LR6r-5GOmKnRspiWSVRRbSrVFL_O7AQu1LVkR9BJb3hSXemztIFu9-yfh-yheJedtlIKL19Jw=w1920-h800-p-l90-rj"
+        },
+        {
+            "id": 3,
+            "name": "恬恬",
+            "link": "https://music.youtube.com/channel/UC6HNQDpHnpV1M4U3k_eJP4w",
+            "image": "https://lh3.googleusercontent.com/ObUBGv6jtY_u7Ocv-5u3QwsX11puA8LoaID01x_0Et1hhbeDCxwn3gs9Iu8C60Ky435B0VGkBgL4Lsqw=w544-h544-l90-rj"
+        },
+        {
+            "id": 4,
+            "name": "盈盈",
+            "link": "https://music.youtube.com/channel/UCUFXIHERyxkw1Q_B0bgpHKQ",
+            "image": "https://lh3.googleusercontent.com/OZ09ghRea4H00jOPDp2EXZChhBKgfaaBfOddeOXrkB-5TXUEqjv-I_woOqnb9A6J_P-VcoI3xIZcVKkF=w544-h544-l90-rj"
+        },
+        {
+            "id": 5,
+            "name": "PAULA",
+            "link": "https://music.youtube.com/channel/UCUFXIHERyxkw1Q_B0bgpHKQ",
+            "image": "images/Paula頭像.jpg"
+        },
+        {
+            "id": 6,
+            "name": "亞米媽媽",
+            "link": "https://music.youtube.com/channel/UC_UVJjS2LYBfHi0h-vlv3Ow",
+            "image": "https://lh3.googleusercontent.com/GsqgskuqPdaY6JRBuXQqebBmjCOXjuP3w_SVYt5IV6Q4ckEiJa-yhkhc165Iid6Ve3xPDwvFwoAvmSo=w544-h544-l90-rj"
+        },
+        {
+            "id": 7,
+            "name": "亞米爸爸",
+            "link": "https://music.youtube.com/channel/UCqf6abrbS19xL85ttaQHjDg",
+            "image": "https://lh3.googleusercontent.com/Pw4-FZeQuk4VErKofPP-lgGfjbE8fUBjigTM1y3mDz4mraw5jlaCgPpVN2pd7bGt14UbbnKBRLXpq1SQkg=w544-h544-l90-rj"
+        }
+    ]
+}

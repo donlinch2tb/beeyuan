@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <!-- 如果流量要超過 100GB了就打開  -->
+ 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="探索 SunnyYummy 官方週邊商品！尋找最新的 T-shirt、鑰匙圈、貼圖以及更多來自你喜愛創作者的獨家商品。">
+    <meta name="keywords" content="SunnyYummy, 週邊商品, T-shirt, 鑰匙圈, 貼圖, 林莉C亞米, 吃貨們">
+    <meta name="author" content="SunnyYummy">
+    <meta name="google-adsense-account" content="ca-pub-8966114892131293">
+
+    <title>SunnyYummy 週邊商品 | 最新限定款 T-shirt、鑰匙圈、貼圖</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sunnyyummy.onrender.com/" />
+
+    <!-- Open Graph 社群標籤 -->
+    <meta property="og:title" content="SunnyYummy 週邊商品 | 最新限定款">
+    <meta property="og:description" content="探索 SunnyYummy 官方週邊商品！限量 T-shirt、鑰匙圈、貼圖，立即選購！">
+    <meta property="og:url" content="https://sunnyyummy.onrender.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://sunnyyummy.onrender.com/images/android-chrome-512x512.png">
+    <meta property="og:site_name" content="SunnyYummy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SunnyYummy 週邊商品 | 最新限定款">
+    <meta name="twitter:description" content="探索 SunnyYummy 官方週邊商品！限量 T-shirt、鑰匙圈、貼圖，立即選購！">
+    <meta name="twitter:image" content="https://sunnyyummy.onrender.com/images/android-chrome-512x512.png">
+
+    <!-- 安全標頭 -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https:; form-action 'self' https:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="index, follow">
+
+    <!-- Favicon 和圖示 -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <div class="nav-menu">
+                <!-- 導航按鈕將由 JavaScript 動態生成 -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 商品網格 -->
+            <div class="products-grid" id="productsGrid">
+                <!-- 商品卡片將由 JavaScript 動態生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 載入中提示 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>載入中...</p>
+    </div>
+
+    <!-- 頁腳資訊 -->
+    <div class="footer-info">
+        <p>© 2023 SunnyYummy. All rights reserved.</p>
+        <p>信箱：paulaqueenatina@gmail.com</p>
+        <p>客服時間：週一～週五 08:00～17:00</p>
+    </div>
+
+    <!-- 底部導航 -->
+    <footer class="bottom-nav">
+        <div class="bottom-nav-container">
+            <a href="index.html" class="bottom-nav-item active">
+                <div class="nav-icon">
+                    <img src="images/footicon_store.png" alt="週邊商品" class="nav-icon-img"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='🛒';">
+                </div>
+                <span>週邊商品</span>
+            </a>
+            <a href="music.html" class="bottom-nav-item">
+                <div class="nav-icon">
+                    <img src="images/footicon_music.png" alt="音樂" class="nav-icon-img"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='🎵';">
+                </div>
+                <span>音樂</span>
+            </a>
+            <a href="scores.html" class="bottom-nav-item">
+                <div class="nav-icon">
+                    <img src="images/footicon_score.png" alt="樂譜" class="nav-icon-img"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='🎼';">
+                </div>
+                <span>樂譜</span>
+            </a>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

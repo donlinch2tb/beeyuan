@@ -1,0 +1,155 @@
+{
+    "products": [
+        {
+            "id": 1,
+            "name": "吃貨們 可愛版T恤",
+            "category": "clothes",
+            "price": 490,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p300x300/2025/06/5/544399_28998b30292a7d0b9ddc9f8cfb127bc2f0f91016.jpg",
+            "description": "100% 純棉材質，舒適透氣，經典樂團圖案設計",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000779273"
+        },
+      
+        {
+            "id": 10,
+            "name": "SunnyYummy T 恤",
+            "category": "clothes",
+            "price": 490,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/04/28/544399_4d7ff49bb8f593127e6f3befb1461a4924b63867.jpg",
+            "description": "無論是日常還是參加粉絲見面會，都能讓你成為焦點。",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000764706"
+        },
+        {
+            "id": 2,
+            "name": "端午節限定貼圖",
+            "category": "line",
+            "price": 30,
+            "image": "images/syline端午節.png",
+            "description": "從包粽、吃粽到加油打氣，陪你一起歡樂過節。",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/30458811/zh-Hant"
+        },
+        {
+            "id": 3,
+            "name": "應援手環",
+            "category": "merchandise",
+            "price": 25,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p300x300/2025/06/2/544399_9d269cc368c0e20e9ddd1c1483d1a76d799eb75d.jpg",
+            "description": "✨ 點亮你的熱情！閃耀登場！ ✨",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000775229"
+        },
+        {
+            "id": 31,
+            "name": "閃耀應援燈",
+            "category": "merchandise",
+            "price": 200,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/06/7/544399_e04511466e117dba4321872237a17f968349e470.jpg",
+            "description": "✨ 點亮你的熱情！閃耀登場！ ✨",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000758432"
+        },
+        {
+            "id": 4,
+            "name": "專屬徽章",
+            "category": "merchandise",
+            "price": 50,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/05/25/544399_1c9dd0551dc20ab176a50f3966becbf399fd25ce.jpg",
+            "description": "超萌專屬徽章！快來收藏這份充滿愛的聯名吧",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000771996"
+        },
+        {
+            "id": 5,
+            "name": "專屬聯名手提袋",
+            "category": "merchandise",
+            "price": 250,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/05/24/544399_c65f9ec1747f936c8c258a731eec412e7b185b52.jpg",
+            "description": "💖 吃貨女孩的甜蜜夥伴！盈盈特選可愛手提袋！",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000771940"
+        },
+        {
+            "id": 6,
+            "name": "林莉C亞米 T-shirt",
+            "category": "clothes",
+            "price": 490,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/04/28/544399_01f001437b9012761c94e2e4baf26d1ba38d7c85.jpg",
+            "description": "100%純棉，舒適透氣。可愛的C亞米圖案！",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000764709"
+        },
+        {
+            "id": 7,
+            "name": "雪球軟糖的夏天！",
+            "category": "line",
+            "price": 30,
+            "image": "images/雪球軟糖貼圖.png",
+            "description": "100%純棉，舒適透氣。可愛的C亞米圖案！",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/30458814/zh-Hant"
+        },
+        {
+            "id": 8,
+            "name": "可愛小女孩貼圖",
+            "category": "line",
+            "price": 30,
+            "image": "images/可愛小女孩貼圖.png",
+            "description": "生活日常貼圖",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/28404376/zh-Hant"
+        },
+        {
+            "id": 81,
+            "name": "SunnyYummy的玩具箱",
+            "category": "line",
+            "price": 30,
+            "image": "images/SunnyYummy的玩具箱貼圖.png",
+            "description": "在各種聊天情況都能派上用場ㄛ！",
+            "displayTime": " ",
+            "link": "https://line.me/S/sticker/7683486/?lang=zh-Hant&utm_source=gnsh_stickerDetail"
+        },
+        {
+            "id": 82,
+            "name": "吃貨們 T 恤",
+            "category": "clothes",
+            "price": 490,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/04/20/544399_f551270650bc4d117f474eeb7d168d318913293d.jpg",
+            "description": "簡約的設計搭配經典 Logo，參加粉絲見面會必備！",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000764708"
+        },
+        {
+            "id": 9,
+            "name": "雪球軟糖 T-shirt",
+            "category": "clothes",
+            "price": 490,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/04/28/544399_08e33fdb1d71e8f19263071f64007a7b33b8c096.jpg",
+            "description": "雪球軟糖的愛好者嗎？這款 T-shirt 絕對讓你愛不釋手！",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000764707"
+        },
+        {
+            "id": 11,
+            "name": "吃貨們帥氣logo T 恤",
+            "category": "clothes",
+            "price": 490,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/04/28/544399_72f937b8de1c2df986618f213c401abb783fecad.jpg",
+            "description": "穿上 吃貨們 T恤，展現你對我們品牌的熱愛！",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000763999"
+        },
+        {
+            "id": 12,
+            "name": "鑰匙圈（可愛姐妹版）",
+            "category": "merchandise",
+            "price": 50,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2025/04/21/544399_d8f08001f582ea404e581f72e323e8c64eea7fc0.png",
+            "description": "SunnyYummy的玩具箱鑰匙圈(雙面圖案)（絕版品售完即止）",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000758431"
+        }
+    ]
+}

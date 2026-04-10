@@ -1,0 +1,9 @@
+Contact: mailto:security@sunnyyummy.com
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: zh-TW, en
+Policy: https://sunnyyummy.com/security-policy
+Acknowledgments: https://sunnyyummy.com/security-acknowledgments
+
+# 安全報告指南
+# 如果您發現安全漏洞，請通過上述聯絡方式報告
+# 我們承諾在收到報告後 48 小時內回應

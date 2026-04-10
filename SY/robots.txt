@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /music.html
+Allow: /*.css
+Allow: /*.js
+Allow: /images/
+
+# 禁止訪問敏感檔案
+Disallow: /products.json
+Disallow: /_headers
+Disallow: /_redirects
+Disallow: /404.html
+
+# 禁止常見攻擊路徑
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /config/
+Disallow: /.git/
+Disallow: /.env
+
+ #
+ 網站地圖
+Sitemap: https://sunnyyummy.onrender.com/sitemap.xml

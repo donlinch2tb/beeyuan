@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企劃書 | SunnyYummy & 吃貨們</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .pages-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .page-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            border-left: 4px solid #3498db;
+        }
+
+        .page-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .page-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .page-description {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header, .page-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>見面會企劃書</h1>
+     </div>
+    
+    <div class="pages-list">
+        <div class="page-card" onclick="window.location.href='見面會.html'">
+            <div class="page-name">活動企劃總覽</div>
+            <div class="page-description">完整的活動企劃書，包含基本資訊、出席人員、詳細流程時間表、重點環節解析。</div>
+        </div>
+
+        <div class="page-card" onclick="window.location.href='見面會1.html'">
+            <div class="page-name">主持人執行手冊</div>
+            <div class="page-description">為主持人席美女量身打造的完整執行手冊，包含事前準備工作、詳細的台詞腳本。</div>
+        </div>
+
+        <div class="page-card" onclick="window.location.href='見面會2.html'">
+            <div class="page-name">SunnyYummy 表演手冊</div>
+            <div class="page-description">專為SunnyYummy雙人組設計的表演執行手冊，詳細規劃了獨唱與合唱的安排。</div>
+        </div>
+
+        <div class="page-card" onclick="window.location.href='見面會3.html'">
+            <div class="page-name">吃貨們 團隊手冊</div>
+            <div class="page-description">為吃貨們三人組準備的完整執行手冊，涵蓋遊戲組隊、隊長職責、販售攤位管理。</div>
+        </div>
+    </div>
+</body>
+</html>

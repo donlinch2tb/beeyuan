@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>樂譜 - SunnyYummy & 吃貨們</title>
+
+    <!-- 安全標頭 -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https:; form-action 'self' https:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="index, follow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!-- 歌手分類導航 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-menu" id="artistFilter">
+                <!-- 分類按鈕將由 JavaScript 動態生成 -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <div class="container">
+            
+                 
+
+                <!-- 樂譜列表 -->
+                <div class="scores-list" id="scoresGrid">
+                    <!-- 樂譜列表將由 JavaScript 動態生成 -->
+                </div>
+            
+        </div>
+    </main>
+
+    <!-- 載入中提示 -->
+    <div class="loading" id="scoresLoading">
+        <div class="spinner"></div>
+        <p>載入中...</p>
+    </div>
+
+    <!-- 頁腳資訊 -->
+    <div class="footer-info">
+        <p>© 2023 SunnyYummy. All rights reserved.</p>
+        <p>信箱：paulaqueenatina@gmail.com</p>
+        <p>客服時間：週一～週五 08:00～17:00</p>
+    </div>
+
+    <!-- 底部導航 -->
+    <footer class="bottom-nav">
+        <div class="bottom-nav-container">
+            <a href="index.html" class="bottom-nav-item">
+                <div class="nav-icon">
+                    <img src="images/footicon_store.png" alt="週邊商品" class="nav-icon-img"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='🛒';">
+                </div>
+                <span>週邊商品</span>
+            </a>
+            <a href="music.html" class="bottom-nav-item">
+                <div class="nav-icon">
+                    <img src="images/footicon_music.png" alt="音樂" class="nav-icon-img"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='🎵';">
+                </div>
+                <span>音樂</span>
+            </a>
+            <a href="scores.html" class="bottom-nav-item active">
+                <div class="nav-icon">
+                    <img src="images/footicon_score.png" alt="樂譜" class="nav-icon-img"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='🎼';">
+                </div>
+                <span>樂譜</span>
+            </a>
+        </div>
+    </footer>
+
+    <script src="scores.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,251 @@
+{
+    "scores": [
+        {
+            "id": 11,
+            "artist": ["林莉C亞米","雪球軟糖"],
+            "songName": "我要快樂的暑假",
+            "image": "https://lh3.googleusercontent.com/05cZvhzpLdfrTISPnmvjiUgBYeRw2ldentNIQUsZ9PMlOBl_mpgSsvPwQ9n07zAl3OYIfPHsU4Y39Lyj=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 我要快樂的暑假 吉他 Guitarians.com.pdf"
+                },
+                {
+                    "name": "和弦譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 我要快樂的暑假 原KEY Guitarians.com.pdf"
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "artist": "林莉C亞米",
+            "songName": "大人的世界很酷",
+            "image": "https://lh3.googleusercontent.com/7C_u6461_QdF4Q5loMt91WT06TKVtY40d36qpGNIfQw5d8ZTPOYVtZ_c1jfTL37Ot3IcrhGYxIKwTjtMMw=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/林莉C亞米 - 大人的世界很酷 Guitarians.com.jpg"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "artist": "林莉C亞米",
+            "songName": "我被棉被綁架",
+            "image": "https://lh3.googleusercontent.com/f8bRN_RBU98z6OWIkOebCGPZQa_jfozMBkNFAtFo4xnqLRLGUFvBNz92WtaDLBTXQWl-0vKPSdPuNb72Cw=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/林莉C亞米 - 我被棉被綁架 Guitarians.com.jpg"
+                },
+                {
+                    "name": "貝斯譜",
+                    "url": "scores/林莉C亞米 - 我被棉被綁架 Guitarians.com2.jpg"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "artist": "林莉C亞米",
+            "songName": "媽媽告訴我",
+            "image": "https://lh3.googleusercontent.com/XF0qxOKeuI89LbWcKfcRKkl-dylJvB4JIGfL_xDZGI-_Zzi7Ke-U1-2xlZN73NZEl87mlTxgrK9MyUW25A=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/林莉C亞米 - 媽媽告訴我 Guitarians.com1.jpg"
+                },
+                {
+                    "name": "貝斯譜",
+                    "url": "scores/林莉C亞米 - 媽媽告訴我 Guitarians.com2.jpg"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "artist": "林莉C亞米",
+            "songName": "會考不會考",
+            "image": "https://lh3.googleusercontent.com/bKC6dbIbTUSymXmlhmuDe-5Q9ZONmhOj13XlHtICXbS0xeXA5-jYJAGtPhh_61VdiJqk8H3Nt1vXMpXR=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/林莉C亞米 - 1會考不會考 Guitarians.com.jpg"
+                },
+                {
+                    "name": "貝斯譜",
+                    "url": "scores/林莉C亞米 - 2會考不會考 Guitarians.com.jpg"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "artist": "林莉C亞米",
+            "songName": "萬聖節來敲門",
+            "image": "https://lh3.googleusercontent.com/94Z--XRilhgTmHs3bxhfJ1uwqkoBXHTRf4iD9N6t1HOQnzi8I4PC6IcOvKw4pqmDNzXJLNnaKdx4wPk=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/林莉C亞米 - 萬聖節來敲門 Guitarians.com.jpg"
+                },
+                {
+                    "name": "貝斯譜",
+                    "url": "scores/林莉C亞米 - 2萬聖節來敲門 Guitarians.com.jpg"
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "artist": [
+                "雪球軟糖",
+                "林莉C亞米"
+            ],
+            "songName": "家裡有個癈物老爸",
+            "image": "https://lh3.googleusercontent.com/33VBbk4TIZfwuzL_6xQx0BRjWEtZG93ZP9MNJh2zLLr2ZWUMZhLC1wPDvklLB8ENOj3AuzI6R6nZ6yc=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜&貝斯譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 家裡1有個廢物老爸 Guitarians.com.jpg"
+                },
+                {
+                    "name": "吉他譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 家裡2有個廢物老爸 Guitarians.com.jpg"
+                },
+                {
+                    "name": "吉他譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 家裡3有個廢物老爸 Guitarians.com.jpg"
+                },
+                {
+                    "name": "貝斯譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 家裡4有個廢物老爸 Guitarians.com.jpg"
+                },
+                {
+                    "name": "和弦譜",
+                    "url": "scores/雪球軟糖,林莉C亞米 - 家裡5有個廢物老爸 Guitarians.com.jpg"
+                },
+                {
+                    "name": "電吉他solo譜",
+                    "url": "scores/家里有个废物老爸 電吉他 solo.pdf"
+                },
+                {
+                    "name": "鼓譜",
+                    "url": "scores/家里有个废物老爸 鼓譜.pdf"
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "artist": "恬恬",
+            "songName": "我的小寶貝龘龘 晚安曲",
+            "image": "https://lh3.googleusercontent.com/ObUBGv6jtY_u7Ocv-5u3QwsX11puA8LoaID01x_0Et1hhbeDCxwn3gs9Iu8C60Ky435B0VGkBgL4Lsqw=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/我的小寶貝 龘龘 晚安曲   吉他譜.pdf"
+                },
+                {
+                    "name": "吉他譜",
+                    "url": "scores/恬恬 - 我的小寶貝龘龘 晚安曲 Guitarians.com.pdf"
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "artist": "恬恬",
+            "songName": "龘龘",
+            "image": "https://lh3.googleusercontent.com/QVfEUvM14AjTX40-24-FsmSLhDxo3obkq72F26JT8oB-8hzggo43yaSbjaxbX1uTRxymwNUreO_ol1w=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜&貝斯譜",
+                    "url": "scores/恬恬 - 龘龘 Guitarians.com.pdf"
+                },
+                {
+                    "name": "吉他譜",
+                    "url": "scores/龘 龘 樂譜.pdf"
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "artist": "雪球軟糖",
+            "songName": "因為我喜歡你",
+            "image": "https://lh3.googleusercontent.com/yl492_D5M9N7FPjnHnKS09LwOH9XiYN4Vb0xrvx0Q3Nt0BY53CzI8McikF9NJlkXEWK_PIVunoLg-V75Lg=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜&貝斯譜",
+                    "url": "scores/雪球軟糖 - 因為我喜歡你 Guitarians.com.pdf"
+                } 
+            ]
+        },
+        {
+            "id": 8,
+            "artist": "雪球軟糖",
+            "songName": "要告別了",
+            "image": "https://lh3.googleusercontent.com/1irtIvn87tKVSBHojLDl_9tczm3utRp5MMXjwrHsq8GRE797r78tnQbPa69TIQEMJl-3MxeWBz9zuHM=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/雪球軟糖 - 要告別了 Guitarians.com.pdf"
+                } 
+            ]
+        },
+        {
+            "id": 9,
+            "artist": "雪球軟糖",
+            "songName": "簡單幸福就是",
+            "image": "https://lh3.googleusercontent.com/DiBUbSN_pQ8fFHU7c9zPrFsnN7Fquv00KZQk5ueIqhtsYINWdAzgO3eZCHsUPFZLiLE37QQy3M5G13jW=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜&貝斯譜",
+                    "url": "scores/雪球軟糖 - 簡單幸福就是 Guitarians.com.pdf"
+                } 
+            ]
+        },
+        {
+            "id": 10,
+            "artist": "雪球軟糖",
+            "songName": "我也知道要聽話",
+            "image": "https://lh3.googleusercontent.com/TMWpqLoKuA0xP7_eh_KsZSBt31OPQnDF2nuVdXZ3s1QyUdRp1UraUGSkXd-lrhoKlxKVnO7zlN630h1F=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/我也知道要聽話  譜 .pdf"
+                } 
+            ]
+        },
+        {
+            "id": 11,
+            "artist": "雪球軟糖",
+            "songName": "最棒的閨蜜",
+            "image": "https://lh3.googleusercontent.com/4ocKc5QznP0FhoHAix4OArAP1SdJL1oLi01g9ahsiY_8Rm0aDctgi3_bdBHMW4eU9Pj611zubcppdN8F=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/最棒的閨蜜   KEY.pdf"
+                } 
+            ]
+        },
+        {
+            "id": 11,
+            "artist": "雪球軟糖",
+            "songName": "對我就是這樣的愛哭鬼",
+            "image": "https://lh3.googleusercontent.com/sb2asMH3xwiOjy_ARBi4f57Oz6sT43IugQi2aoTsC3htIEUx9p5sPqxfKDwrlG2RRUWvm0ZUODAP3lDoOg=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/雪球軟糖 - 對我就是這樣的愛哭鬼 Guitarians.com.pdf"
+                } 
+            ]
+        },
+        {
+            "id": 11,
+            "artist": "Paula",
+            "songName": "恭喜你嫁人了",
+            "image": "https://lh3.googleusercontent.com/oInAI_KzL9ZVfjn6vZUsj_UktTtfaUUlg4gybXXhjSxCbSCFylOcc3zAM27DRkRDAz1K3zcPaiczuuBvxA=w544-h544-l90-rj",
+            "scoreLinks": [
+                {
+                    "name": "吉他譜",
+                    "url": "scores/恭喜你嫁人了 吉他譜.pdf"
+                } 
+            ]
+        }
+    ]
+}
