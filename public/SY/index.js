@@ -59,10 +59,14 @@ function renderProducts(products) {
 
     const fragment = document.createDocumentFragment(); // 使用文檔碎片以提高性能
     products.forEach(product => {
+        const productStatus = normalizeProductStatus(product.status, product.displayTime);
         const card = document.createElement('div');
         card.className = 'product-card';
+        if (isProductUnavailable(productStatus)) {
+            card.classList.add('is-unavailable');
+        }
         card.dataset.id = product.id;
-        card.dataset.link = product.link || '/'; // 將連結存在 dataset 中
+        card.dataset.link = isProductUnavailable(productStatus) ? '/' : (product.link || '/'); // 將連結存在 dataset 中
 
         // 圖片區塊
         const imageDiv = document.createElement('div');
@@ -70,7 +74,7 @@ function renderProducts(products) {
         imageDiv.innerHTML = `
             ${getProductImageHTML(product.image)}
             <span class="product-category">${getCategoryName(product.category)}</span>
-            ${getCountdownBadge(product.displayTime)}`;
+            ${getStatusBadge(productStatus, product.displayTime)}`;
 
         // 商品資訊區塊 - 【安全核心】
         const infoDiv = document.createElement('div');
@@ -93,7 +97,7 @@ function renderProducts(products) {
         // 底部指示器
         const linkIndicatorDiv = document.createElement('div');
         linkIndicatorDiv.className = 'product-link-indicator';
-        linkIndicatorDiv.innerHTML = getBottomIndicator(product.displayTime);
+        linkIndicatorDiv.innerHTML = getBottomIndicator(productStatus, product.displayTime);
 
         card.append(imageDiv, infoDiv, linkIndicatorDiv);
         fragment.appendChild(card);
@@ -195,7 +199,34 @@ function getProductImageHTML(imagePath) {
     return `<img src="${imagePath}" alt="商品圖片" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentNode.insertAdjacentHTML('beforeend', '<span style=\\'font-size:3rem; color:#ccc;\\'>🎵</span>');">`;
 }
 
-function getCountdownBadge(displayTime) {
+function normalizeProductStatus(status, displayTime) {
+    const normalized = (status || '').trim().toLowerCase();
+    if (normalized === 'soldout' || normalized === 'ended') {
+        return normalized;
+    }
+
+    if (!displayTime || !displayTime.trim()) return '';
+    try {
+        const [_, endDateStr] = displayTime.split(' to ');
+        if (!endDateStr) return '';
+        const endDate = new Date(endDateStr.trim());
+        endDate.setHours(23, 59, 59, 999);
+        if (endDate < new Date()) return 'ended';
+    } catch (e) {
+        return '';
+    }
+
+    return '';
+}
+
+function isProductUnavailable(status) {
+    return status === 'soldout' || status === 'ended';
+}
+
+function getStatusBadge(status, displayTime) {
+    if (status === 'soldout') return '<span class="countdown-badge soldout">已售完</span>';
+    if (status === 'ended') return '<span class="countdown-badge expired">已結束</span>';
+
     if (!displayTime || !displayTime.trim()) return '';
     try {
         const [_, endDateStr] = displayTime.split(' to ');
@@ -211,7 +242,9 @@ function getCountdownBadge(displayTime) {
     } catch (e) { return ''; }
 }
 
-function getBottomIndicator(displayTime) {
+function getBottomIndicator(status, displayTime) {
+    if (status === 'soldout') return '<span>此商品目前已售完</span>';
+    if (status === 'ended') return '<span>此商品活動已結束</span>';
     if (!displayTime || !displayTime.trim()) return '<span>點擊查看詳情 →</span>';
     try {
         const [start, end] = displayTime.split(' to ').map(s => s.trim());

@@ -95,9 +95,25 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+.product-card.is-unavailable {
+    cursor: default;
+    opacity: 0.88;
+}
+
+.product-card.is-unavailable:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
 .product-card:hover .product-link-indicator {
     opacity: 1;
     transform: translateY(0);
+}
+
+.product-card.is-unavailable .product-link-indicator {
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(135deg, #8d99a6 0%, #6b7785 100%);
 }
 
 .product-image {
@@ -173,6 +189,11 @@ body {
 .countdown-badge.expired {
     background: rgba(96, 125, 139, 0.9);
     /* 灰色 - 已結束 */
+    animation: none;
+}
+
+.countdown-badge.soldout {
+    background: rgba(198, 40, 40, 0.92);
     animation: none;
 }
 

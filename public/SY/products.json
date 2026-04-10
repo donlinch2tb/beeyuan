@@ -29,6 +29,7 @@
             "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/29/544399_88b0bc6ef70f6868507c89ec8ebada5ae339c81e.jpg",
             "description": "典藏小卡 | 鐳射閃耀系列（圓角硬卡）",
             "displayTime": " ",
+            "status": "soldout",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000928610"
         },
 
@@ -50,6 +51,7 @@
             "image": "https://img.cashier.ecpay.com.tw/image/resize/p300x300/2025/06/2/544399_9d269cc368c0e20e9ddd1c1483d1a76d799eb75d.jpg",
             "description": "✨ 點亮你的熱情！閃耀登場！ ✨",
             "displayTime": " ",
+            "status": "soldout",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000775229"
         },
         {
