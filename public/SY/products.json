@@ -21,6 +21,17 @@
             "displayTime": " ",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000764706"
         },
+{
+            "id": 13,
+            "name": "SunnyYummy小卡",
+            "category": "merchandise",
+            "price": 50,
+            "image": "https://img.cashier.ecpay.com.tw/image/resize/p600x600/2026/03/29/544399_88b0bc6ef70f6868507c89ec8ebada5ae339c81e.jpg",
+            "description": "典藏小卡 | 鐳射閃耀系列（圓角硬卡）",
+            "displayTime": " ",
+            "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000928610"
+        },
+
         {
             "id": 2,
             "name": "端午節限定貼圖",
