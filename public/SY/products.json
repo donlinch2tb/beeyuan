@@ -10,7 +10,6 @@
             "displayTime": " ",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000779273"
         },
-      
         {
             "id": 10,
             "name": "SunnyYummy T 恤",
@@ -21,7 +20,7 @@
             "displayTime": " ",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000764706"
         },
-{
+        {
             "id": 13,
             "name": "SunnyYummy小卡",
             "category": "merchandise",
@@ -32,7 +31,6 @@
             "status": "soldout",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000928610"
         },
-
         {
             "id": 2,
             "name": "端午節限定貼圖",
@@ -153,6 +151,46 @@
             "description": "穿上 吃貨們 T恤，展現你對我們品牌的熱愛！",
             "displayTime": " ",
             "link": "https://sunnyyummy.cashier.ecpay.com.tw/product/000000000763999"
+        },
+        {
+            "id": 16,
+            "name": "龘龘 過年貼圖",
+            "category": "line",
+            "price": 30,
+            "image": "https://hgigyuwfrtxnjrbcviub.supabase.co/storage/v1/object/public/images/1765865258194-tata-line1.webp",
+            "description": "吃貨們的可愛擔當「龘龘」首度登場！化身小財神來跟大家拜年。",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/32276857/zh-Hant?utm_source=gnsh_stickerDetail"
+        },
+        {
+            "id": 17,
+            "name": "SunnyYummy 姐妹貼圖",
+            "category": "line",
+            "price": 30,
+            "image": "https://hgigyuwfrtxnjrbcviub.supabase.co/storage/v1/object/public/images/1765865348961-syb3.webp",
+            "description": "姐妹花陪你度過每一個重要時刻！",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/32276869/zh-Hant?utm_source=gnsh_stickerDetail"
+        },
+        {
+            "id": 18,
+            "name": "雪球軟糖 可愛貼圖",
+            "category": "line",
+            "price": 30,
+            "image": "https://hgigyuwfrtxnjrbcviub.supabase.co/storage/v1/object/public/images/1764250288344-2025-11-279.jpg",
+            "description": "雪球軟糖雖然腦袋空空，但能給你滿滿的療癒能量。",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/32136083/zh-Hant?from=sticker"
+        },
+        {
+            "id": 19,
+            "name": "林莉C亞米 可愛女孩",
+            "category": "line",
+            "price": 30,
+            "image": "https://hgigyuwfrtxnjrbcviub.supabase.co/storage/v1/object/public/images/1756968673623-2025-09-042.jpg",
+            "description": "粉紅色的戲精小可愛「林莉C亞米」來報到！",
+            "displayTime": " ",
+            "link": "https://store.line.me/stickershop/product/31574683/zh-Hant?from=sticker"
         },
         {
             "id": 12,
